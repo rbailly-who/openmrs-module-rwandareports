@@ -17,9 +17,6 @@ import java.util.List;
 
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.orderextension.ExtendedDrugOrder;
-import org.openmrs.module.orderextension.api.OrderExtensionService;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -46,16 +43,10 @@ public class UpcomingChemotherapyCohortDefinitionEvaluator implements CohortDefi
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
     	UpcomingChemotherapyCohortDefinition definition = (UpcomingChemotherapyCohortDefinition) cohortDefinition;
 		
-    	List<ExtendedDrugOrder> orders = Context.getService(OrderExtensionService.class).getExtendedDrugOrders(null, definition.getChemotherapyIndication(), definition.getAsOfDate(), definition.getUntilDate());
+
     	Cohort cohort = new Cohort();
     	
-    	for(ExtendedDrugOrder order: orders)
-    	{
-    		if(order.getRoute() != null && gp.getConceptList(GlobalPropertiesManagement.IV_CONCEPT).contains(order.getRoute()))
-    		{
-    			cohort.addMember(order.getPatient().getId());
-    		}
-    	}
+
     	return new EvaluatedCohort(cohort, cohortDefinition, context);
     }
 }

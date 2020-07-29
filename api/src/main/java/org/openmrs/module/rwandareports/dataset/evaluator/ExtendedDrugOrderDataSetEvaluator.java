@@ -24,14 +24,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.orderextension.DrugOrderComparator;
-import org.openmrs.module.orderextension.DrugRegimen;
-import org.openmrs.module.orderextension.ExtendedDrugOrder;
-import org.openmrs.module.orderextension.api.OrderExtensionService;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -43,7 +36,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.rwandareports.dataset.ExtendedDrugOrderDataSetDefinition;
 import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
-import org.openmrs.util.OpenmrsUtil;
+
 
 /**
  * The logic that evaluates a {@link EncounterDataSetDefinition} and produces an {@link DataSet}
@@ -74,47 +67,7 @@ public class ExtendedDrugOrderDataSetEvaluator implements DataSetEvaluator {
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		
 		SimpleDataSet dataSet = new SimpleDataSet(dsd, context);
-		
-		List<ExtendedDrugOrder> orders = new ArrayList<ExtendedDrugOrder>();
-		
-		if (dsd.getDrugRegimen() != null) {
-			
-			String[] regimenInfo = dsd.getDrugRegimen().split(":");
-			Integer regimenId = Integer.parseInt(regimenInfo[0]);
-			
-			DrugRegimen regimen = Context.getService(OrderExtensionService.class).getDrugRegimen(
-			    regimenId);
-			
-			Date activeDate = null;
-			if (regimenInfo.length > 1) {
-				Integer regOffset = Integer.parseInt(regimenInfo[1]);
-				Calendar offset = Calendar.getInstance();
-				offset.setTime(regimen.getFirstDrugOrderStartDate());
-				offset.add(Calendar.DAY_OF_YEAR, regOffset);
-				activeDate = offset.getTime();
-			}
-			
-			if (dsd.getIndication() != null) {
-				for (ExtendedDrugOrder order : regimen.getMembers()) {
-					if (!order.isVoided() && order.getIndication() != null && order.getIndication().equals(dsd.getIndication())) {
-						if (activeDate != null) {
-							if (order.isCurrent(activeDate) || OpenmrsUtil.compare(order.getStartDate(), activeDate) == 0 || (order.getAutoExpireDate() != null && OpenmrsUtil.compare(order.getAutoExpireDate(), activeDate) == 0) || (order.getDiscontinuedDate() != null && OpenmrsUtil.compare(order.getDiscontinuedDate(), activeDate) == 0)) {
-								orders.add(order);
-							}
-						} else {
-							orders.add(order);
-						}
-					}
-				}
-			} else {
-				for(ExtendedDrugOrder order: regimen.getMembers())
-				{
-					if(!order.isVoided())
-					{
-						orders.add(order);
-					}
-				}
-			}
+
 			
 			DataSetColumn start = new DataSetColumn("startDate", "startDate", Date.class);
 			dataSet.getMetaData().addColumn(start);
@@ -156,170 +109,7 @@ public class ExtendedDrugOrderDataSetEvaluator implements DataSetEvaluator {
 			dataSet.getMetaData().addColumn(discontuedReason);
 			
 			
-			Collections.sort(orders, new DrugOrderComparator());
 
-			for (ExtendedDrugOrder edo : orders) {
-				//if(edo.getDiscontinued() == false){
-				SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
-				dataSet.addColumnValue(edo.getId(), start, dateFormat.format(edo.getStartDate()));
-				/*if(edo.getDiscontinuedDate() != null){
-				dataSet.addColumnValue(edo.getId(), discoDate, dateFormat.format(edo.getDiscontinuedDate()));
-				}*/
-				/*if(edo.getDiscontinuedDate() != null && edo.getDiscontinuedReason() != null){
-					dataSet.addColumnValue(edo.getId(), discoReasonAndDate, edo.getDiscontinuedReason().getName().toString()+" "+dateFormat.format(edo.getDiscontinuedDate()).toString());
-					}*/
-				String drugDisplay = "";
-				if (edo.getDrug() != null) {
-					drugDisplay = edo.getDrug().getName();
-				} else if (edo.getConcept() != null) {
-					drugDisplay = edo.getConcept().getDisplayString();
-				}
-				dataSet.addColumnValue(edo.getId(), drug, drugDisplay);
-				
-				String doseDisplay = "";
-				String actualDoseDisplay = "";
-				String doseReductionDisplay = "";
-				
-				DecimalFormat fPerc = new DecimalFormat("0");
-				
-				if(edo.getDrug().getDoseStrength() != null)
-				{
-					Double reduction = (edo.getDose()/edo.getDrug().getDoseStrength())*100;
-					if(reduction < 100)
-					{
-						doseReductionDisplay = fPerc.format(reduction) + "%";
-					}
-				}
-				dataSet.addColumnValue(edo.getId(), doseReduction, doseReductionDisplay);
-				
-				DecimalFormat f = new DecimalFormat("0.###");
-				DecimalFormat f2 = new DecimalFormat("0.#");
-				if (edo.getDose() != null && edo.getUnits() != null) {
-					if (edo.getUnits().equals("mg/m2")) {
-						doseDisplay = f.format(edo.getDose());
-					}
-					else if(edo.getUnits().contains("/m2") || edo.getUnits().contains("/kg"))
-					{
-						doseDisplay = f.format(edo.getDose()) + edo.getUnits();
-					}
-					else if(edo.getUnits().contains("AUC"))
-					{
-						doseDisplay = edo.getUnits() + "=" + f.format(edo.getDose());
-					}
-					
-					if (edo.getUnits().contains("/m2")) {
-						
-						Patient patient = edo.getPatient();
-						List<Obs> bsaValues = Context.getObsService().getObservationsByPersonAndConcept(patient, bsa);
-						
-						if (bsaValues != null && bsaValues.size() > 0) {
-							Obs recent = null;
-							for (Obs o : bsaValues) {
-								if (recent == null || recent.getObsDatetime().before(o.getObsDatetime())) {
-									recent = o;
-								}
-							}
-							
-							double calcDose = edo.getDose() * recent.getValueNumeric();
-							if (edo.getDrug() != null && edo.getDrug().getMaximumDailyDose() != null
-							        && calcDose > edo.getDrug().getMaximumDailyDose()) {
-								calcDose = edo.getDrug().getMaximumDailyDose();
-							}
-							actualDoseDisplay = f2.format(calcDose);
-						}
-						
-					} else if (edo.getUnits().contains("/kg")) {
-						
-						Patient patient = edo.getPatient();
-						List<Obs> weightValues = Context.getObsService().getObservationsByPersonAndConcept(patient, weight);
-						
-						if (weightValues != null && weightValues.size() > 0) {
-							Obs recent = null;
-							for (Obs o : weightValues) {
-								if (recent == null || recent.getObsDatetime().before(o.getObsDatetime())) {
-									recent = o;
-								}
-							}
-							
-							double calcDose = edo.getDose() * recent.getValueNumeric();
-							if (edo.getDrug() != null && edo.getDrug().getMaximumDailyDose() != null
-							        && calcDose > edo.getDrug().getMaximumDailyDose()) {
-								calcDose = edo.getDrug().getMaximumDailyDose();
-							}
-							actualDoseDisplay = f2.format(calcDose);
-						}
-						
-					} else if(edo.getUnits().contains("AUC"))
-					{
-						actualDoseDisplay = "";
-					}
-						else {
-						actualDoseDisplay = f2.format(edo.getDose()) + " (" + edo.getUnits() + ")";
-					}
-				}
-				dataSet.addColumnValue(edo.getId(), dose, doseDisplay);
-				dataSet.addColumnValue(edo.getId(), actualDose, actualDoseDisplay);
-				
-				String routeDisplay = "";
-				if (edo.getRoute() != null) {
-					routeDisplay = edo.getRoute().getShortestName(Context.getLocale(), false).getName();
-				}
-				dataSet.addColumnValue(edo.getId(), route, routeDisplay);
-				
-				String infInstDisplay = "";
-				if (edo.getAdministrationInstructions() != null) {
-					infInstDisplay = edo.getAdministrationInstructions();
-				}
-				dataSet.addColumnValue(edo.getId(), infInst, infInstDisplay);
-				
-				String freqDisplay = "";
-				if (edo.getFrequency() != null) {
-					freqDisplay = edo.getFrequency();
-					
-					int length = 0;
-					if (edo.getDiscontinuedDate() != null) {
-						length = calculateDaysDifference(edo.getDiscontinuedDate(), edo.getStartDate());
-						
-					}
-					if (edo.getAutoExpireDate() != null) {
-						length = calculateDaysDifference(edo.getAutoExpireDate(), edo.getStartDate());
-						
-					}
-					
-					if (length > 1) {
-						freqDisplay = edo.getFrequency() + " for " + Integer.toString(length) + " days";
-					}
-				}
-				dataSet.addColumnValue(edo.getId(), freq, freqDisplay);
-				
-				String instructionsDisplay = "";
-				if (edo.getInstructions() != null) {
-					instructionsDisplay = edo.getInstructions();
-				}
-				dataSet.addColumnValue(edo.getId(), instructions, instructionsDisplay);
-				
-				String discontiedReasonDisplay = "";
-				if (edo.getDiscontinuedReason() != null) {
-					discontiedReasonDisplay = edo.getDiscontinuedReason().getName().toString();
-				}
-				dataSet.addColumnValue(edo.getId(), discontuedReason, discontiedReasonDisplay);
-			//}
-			}
-			if (orders.size() == 0) {
-				dataSet.addColumnValue(-1, start, "");
-				//dataSet.addColumnValue(-1, discoDate, "");
-				dataSet.addColumnValue(-1, drug, "");
-				dataSet.addColumnValue(-1, doseReduction, "");
-				dataSet.addColumnValue(-1, dose, "");
-				dataSet.addColumnValue(-1, actualDose, "");
-				dataSet.addColumnValue(-1, route, "");
-				dataSet.addColumnValue(-1, infInst, "");
-				dataSet.addColumnValue(-1, freq, "");
-				dataSet.addColumnValue(-1, instructions, "");
-				dataSet.addColumnValue(-1, discontuedReason, "");
-				//dataSet.addColumnValue(-1, discoReasonAndDate, "");
-			}
-		}
 		return dataSet;
 	}
 	

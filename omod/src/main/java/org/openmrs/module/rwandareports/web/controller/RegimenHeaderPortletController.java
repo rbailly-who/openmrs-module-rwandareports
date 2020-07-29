@@ -15,8 +15,6 @@ package org.openmrs.module.rwandareports.web.controller;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +28,6 @@ import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.orderextension.DrugRegimen;
-import org.openmrs.module.orderextension.ExtendedDrugOrder;
 import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 import org.openmrs.web.controller.PortletController;
 import org.springframework.stereotype.Controller;
@@ -59,27 +56,7 @@ public class RegimenHeaderPortletController extends PortletController {
 		Calendar compareDate = Calendar.getInstance();
 		compareDate.add(Calendar.DAY_OF_YEAR, -7);
 		
-		for(DrugOrder drugOrder : allDrugOrders)
-		{
-			if (drugOrder instanceof ExtendedDrugOrder) {
-				ExtendedDrugOrder edo = (ExtendedDrugOrder)drugOrder;
-				if(edo.getGroup() != null && edo.getGroup() instanceof DrugRegimen) {
-					DrugRegimen regimen = (DrugRegimen)edo.getGroup();
-					if (!regimens.contains(regimen))
-					{
-						Set<ExtendedDrugOrder> members = regimen.getMembers();
-						for(ExtendedDrugOrder order: members)
-						{
-							if(order.getStartDate().after(compareDate.getTime()) && order.getRoute() != null && iv.contains(order.getRoute()) && order.getIndication() != null && chemotherapy.equals(order.getIndication()))
-							{
-								regimens.add(regimen);
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
+
 		
 		if(regimens.size() > 0)
 		{
@@ -93,28 +70,7 @@ public class RegimenHeaderPortletController extends PortletController {
 			}
 			model.put("regimens", regimenDTOs);
 		}
-		
-		for(DrugOrder drugOrder : allDrugOrders)
-		{
-			if (drugOrder instanceof ExtendedDrugOrder) {
-				ExtendedDrugOrder edo = (ExtendedDrugOrder)drugOrder;
-				if(edo.getGroup() != null && edo.getGroup() instanceof DrugRegimen) {
-					DrugRegimen regimen = (DrugRegimen)edo.getGroup();
-					if (!allRegimens.contains(regimen))
-					{
-						Set<ExtendedDrugOrder> members = regimen.getMembers();
-						for(ExtendedDrugOrder order: members)
-						{
-							if(order.getIndication() != null && chemotherapy.equals(order.getIndication()))
-							{
-								allRegimens.add(regimen);
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
+
 		
 		if(allRegimens.size() > 0)
 		{
@@ -137,36 +93,10 @@ public class RegimenHeaderPortletController extends PortletController {
 		List<Concept> iv = gp.getConceptList(GlobalPropertiesManagement.IV_CONCEPT);
 		
 		Set<Date> ivDates = new HashSet<Date>();
-		for(ExtendedDrugOrder order: regimen.getMembers())
-		{
-			if(order.getRoute() != null && iv.contains(order.getRoute()))
-			{
-				ivDates.add(order.getStartDate());
-			}
-		}
-		
-		List<StartDateDTO> cycleDays = new ArrayList<StartDateDTO>();
-		for(Date date: ivDates)
-		{
-			long cycleDay = date.getTime() - regimen.getFirstDrugOrderStartDate().getTime();
-			if(cycleDay > 0)
-			{
-				cycleDay = cycleDay/86400000;
-			}
-			
-			StartDateDTO dto = new StartDateDTO();
-			dto.setStartDate(date);
-			dto.setStartDay((int)cycleDay);
-			cycleDays.add(dto);
-			Collections.sort(cycleDays, new Comparator<StartDateDTO>() {
 
-				@Override
-                public int compare(StartDateDTO o1, StartDateDTO o2) {
-	                return o1.getStartDay().compareTo(o2.getStartDay());
-                }
-				
-			});
-		}
+
+		List<StartDateDTO> cycleDays = new ArrayList<StartDateDTO>();
+
 		return cycleDays;
 	}
 }

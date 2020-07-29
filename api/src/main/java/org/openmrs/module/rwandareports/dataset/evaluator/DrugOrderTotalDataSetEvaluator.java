@@ -24,11 +24,9 @@ import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
-import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.orderextension.ExtendedDrugOrder;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
@@ -97,92 +95,7 @@ public class DrugOrderTotalDataSetEvaluator implements DataSetEvaluator {
 			for (Integer pId : cohort.getMemberIds()) {
 				Patient patient = Context.getPatientService().getPatient(pId);
 				List<DrugOrder> allDrugOrders = Context.getOrderService().getDrugOrdersByPatient(patient);
-				
-				for (DrugOrder drO : allDrugOrders) {
-					if (drO instanceof ExtendedDrugOrder) {
-						ExtendedDrugOrder eDrO = (ExtendedDrugOrder) drO;
-						if (drugDSD.getIndication().contains(eDrO.getIndication())) {
-							if (drO.getDrug() != null
-							        && drO.getDrug().getConcept() != null
-							        && (drugDSD.getDrugExclusions() == null || !drugDSD.getDrugExclusions().contains(
-							            drO.getDrug().getConcept()))) {
-								if (eDrO.isCurrent(drugDSD.getAsOfDate())) {
-									double dosage = 0;
-									if (drugTotal.containsKey(eDrO.getDrug())) {
-										dosage = drugTotal.get(eDrO.getDrug());
-									}
-									
-									if (eDrO.getDose() != null && eDrO.getUnits() != null) {
-										
-										if (eDrO.getUnits().contains("/m2")) {
-											
-											List<Obs> bsaValues = Context.getObsService().getObservationsByPersonAndConcept(
-											    patient, bsa);
-											
-											if (bsaValues != null && bsaValues.size() > 0) {
-												Obs recent = null;
-												for (Obs o : bsaValues) {
-													if (recent == null || recent.getObsDatetime().before(o.getObsDatetime())) {
-														recent = o;
-													}
-												}
-												
-												double calcDose = eDrO.getDose() * recent.getValueNumeric();
-												if (eDrO.getDrug() != null && eDrO.getDrug().getMaximumDailyDose() != null
-												        && calcDose > eDrO.getDrug().getMaximumDailyDose()) {
-													calcDose = eDrO.getDrug().getMaximumDailyDose();
-												}
-												if (eDrO.getRoute() != null && eDrO.getRoute().equals(oral)) {
-													double units = calcDose / eDrO.getDrug().getDoseStrength();
-													calcDose = Math.ceil(units);
-												}
-												dosage = dosage + calcDose;
-											}
-										} else if (eDrO.getUnits().contains("/kg")) {
-											
-											List<Obs> weightValues = Context.getObsService()
-											        .getObservationsByPersonAndConcept(patient, weight);
-											
-											if (weightValues != null && weightValues.size() > 0) {
-												Obs recent = null;
-												for (Obs o : weightValues) {
-													if (recent == null || recent.getObsDatetime().before(o.getObsDatetime())) {
-														recent = o;
-													}
-												}
-												
-												double calcDose = eDrO.getDose() * recent.getValueNumeric();
-												if (eDrO.getDrug() != null && eDrO.getDrug().getMaximumDailyDose() != null
-												        && calcDose > eDrO.getDrug().getMaximumDailyDose()) {
-													calcDose = eDrO.getDrug().getMaximumDailyDose();
-												}
-												if (eDrO.getRoute() != null && eDrO.getRoute().equals(oral)) {
-													double units = calcDose / eDrO.getDrug().getDoseStrength();
-													calcDose = Math.ceil(units);
-												}
-												dosage = dosage + calcDose;
-											}
-										} else if (eDrO.getUnits().contains("AUC")) {
-											dosage = dosage + 2;
-										} else {
-											if (eDrO.getDrug().getDosageForm() != null
-											        && !eDrO.getDrug().getDosageForm().equals(tabs)
-											        && eDrO.getDrug().getRoute().equals(oral)) {
-												
-												double units = eDrO.getDose() / eDrO.getDrug().getDoseStrength();
-												dosage = dosage + Math.ceil(units);
-											} else {
-												dosage = dosage + eDrO.getDose();
-											}
-										}
-										
-										drugTotal.put(eDrO.getDrug(), dosage);
-									}
-								}
-							}
-						}
-					}
-				}
+
 			}
 			Map<Concept, DrugTotalPOJO> combinedTotals = new HashMap<Concept, DrugTotalPOJO>();
 			for (Drug d : drugTotal.keySet()) {
