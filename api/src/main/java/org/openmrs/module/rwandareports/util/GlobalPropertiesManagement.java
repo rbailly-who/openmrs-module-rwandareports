@@ -863,7 +863,7 @@ public class GlobalPropertiesManagement {
 	
 	public final static String HYPERTENSION_ENCOUNTER = "reports.HypertensionEncounterType";
 	
-	public final static String HEART_FAILURE_ENCOUNTER = "reports.HeartFailureEncounterType";
+	public final static String HEART_FAILURE_ENCOUNTERS = "reports.HeartFailureEncounterType";
 	
 	public final static String PATIENT_TRANSFER_ENCOUNTER = "reports.PatientTransferEncounterType";
 	

@@ -1958,8 +1958,8 @@ public class Cohorts {
 		                
 		                + formIds.toString()
 		                
-		                + ")order by encounter_datetime desc) as ordred_enc group by ordred_enc.patient_id) as last_enc where o.encounter_id=last_enc.encounter_id and last_enc.voided=0 and o.voided=0 and o.concept_id in ("
-		                
+		                + ") and encounter_datetime < :start and voided=0 order by encounter_datetime desc) as ordred_enc group by ordred_enc.patient_id) as last_enc where o.encounter_id=last_enc.encounter_id and last_enc.voided=0 and o.voided=0 and o.concept_id in ("
+
 		                + returnVisitDate.getConceptId() + "," + followupDate.getConceptId() + ")"
 		                
 		                + " and o.value_datetime>= :start and o.value_datetime<= :end order by o.value_datetime");

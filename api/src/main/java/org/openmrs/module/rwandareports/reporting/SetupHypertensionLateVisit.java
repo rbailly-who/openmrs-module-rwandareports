@@ -44,6 +44,8 @@ public class SetupHypertensionLateVisit {
     private Form hypertensionRDVForm;
     private Form hypertensionDDBForm;
     private Form followUpForm;
+    private EncounterType hFHTNCKDENCOUNTERTYPE;
+    private List<EncounterType> HypertensionEncountersList = new ArrayList<EncounterType>();
 
 	RelationshipType HBCP;
     
@@ -102,7 +104,7 @@ public class SetupHypertensionLateVisit {
 	
 		dataSetDefinition1.addFilter(Cohorts.createInProgramParameterizableByDate("Patients in " + hypertensionProgram.getName(), hypertensionProgram), ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
 	                
-	    dataSetDefinition1.addFilter(Cohorts.createPatientsLateForVisit(hypertensionForms, hypertensionflowsheet), ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
+	    dataSetDefinition1.addFilter(Cohorts.createPatientsLateForVisitINDifferentEncounterTypes(hypertensionForms, HypertensionEncountersList), ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
 	  
 	     //==================================================================
         //                 Columns of report settings
@@ -126,11 +128,11 @@ public class SetupHypertensionLateVisit {
         DateOfBirthShowingEstimation birthdate = RowPerPatientColumns.getDateOfBirth("Date of Birth", null, null);
         dataSetDefinition1.addColumn(birthdate, new HashMap<String, Object>());
         
-        dataSetDefinition1.addColumn(RowPerPatientColumns.getNextVisitInMostRecentEncounterOfTypes("nextVisit",hypertensionflowsheet,
+        dataSetDefinition1.addColumn(RowPerPatientColumns.getNextVisitMostRecentEncounterOfTheTypes("nextVisit",HypertensionEncountersList,
 						new ObservationInMostRecentEncounterOfType(),null),new HashMap<String, Object>());
 		
         CustomCalculationBasedOnMultiplePatientDataDefinitions numberofdaysLate = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
-        numberofdaysLate.addPatientDataToBeEvaluated(RowPerPatientColumns.getNextVisitInMostRecentEncounterOfTypes("nextVisit",hypertensionflowsheet,
+        numberofdaysLate.addPatientDataToBeEvaluated(RowPerPatientColumns.getNextVisitMostRecentEncounterOfTheTypes("nextVisit",HypertensionEncountersList,
 				new ObservationInMostRecentEncounterOfType(),dateFilter),new HashMap<String, Object>());
         numberofdaysLate.setName("numberofdaysLate");
         numberofdaysLate.setCalculator(new DaysLate());
@@ -181,6 +183,10 @@ public class SetupHypertensionLateVisit {
         //hypertensionForms.add(followUpForm);
 
 		hypertensionForms=gp.getFormList(GlobalPropertiesManagement.HYPERTENSION_DDB_FLOW_VISIT);
+		hFHTNCKDENCOUNTERTYPE = gp.getEncounterType(GlobalPropertiesManagement.HF_HTN_CKD_ENCOUNTER_TYPE);
+		HypertensionEncountersList.add(hypertensionflowsheet);
+		HypertensionEncountersList.add(hFHTNCKDENCOUNTERTYPE);
+
 
 		HBCP=gp.getRelationshipType(GlobalPropertiesManagement.HBCP_RELATIONSHIP);
 	}	

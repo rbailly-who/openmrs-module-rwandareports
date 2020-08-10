@@ -188,7 +188,7 @@ public class SetupHeartFailureConsultSheet {
 		//DDBAndRendezvousForms.add(followUpForm);
 		//DDBAndRendezvousForms.add(postOpRDV);
 
-		heartFailureEncounter = gp.getEncounterTypeList(GlobalPropertiesManagement.HEART_FAILURE_ENCOUNTER);
+		heartFailureEncounter = gp.getEncounterTypeList(GlobalPropertiesManagement.HEART_FAILURE_ENCOUNTERS);
 
 		HBCP=gp.getRelationshipType(GlobalPropertiesManagement.HBCP_RELATIONSHIP);
 		

@@ -80,7 +80,7 @@ public class SetupDataEntryDelayReport {
 		dataEntryDelay.addEncounterType(gp.getEncounterType(GlobalPropertiesManagement.ASTHMA_VISIT));
 		dataEntryDelay.addEncounterType(gp.getEncounterType(GlobalPropertiesManagement.DIABETES_VISIT));
 		dataEntryDelay.addEncounterType(gp.getEncounterType(GlobalPropertiesManagement.EPILEPSY_VISIT));
-		dataEntryDelay.addEncounterType(gp.getEncounterType(GlobalPropertiesManagement.HEART_FAILURE_ENCOUNTER));
+		dataEntryDelay.addEncounterType(gp.getEncounterType(GlobalPropertiesManagement.HEART_FAILURE_ENCOUNTERS));
 		dataEntryDelay.addEncounterType(gp.getEncounterType(GlobalPropertiesManagement.HYPERTENSION_ENCOUNTER));
 		dataEntryDelay.addEncounterType(gp.getEncounterType(GlobalPropertiesManagement.INPATIENT_ONCOLOGY_ENCOUNTER));
 		dataEntryDelay.addEncounterType(gp.getEncounterType(GlobalPropertiesManagement.OUTPATIENT_ONCOLOGY_ENCOUNTER));

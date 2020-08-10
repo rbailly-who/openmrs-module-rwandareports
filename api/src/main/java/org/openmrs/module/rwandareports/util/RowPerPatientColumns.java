@@ -783,6 +783,15 @@ public class RowPerPatientColumns {
 				encounterType);
 	}
 
+	public static ObservationInMostRecentEncounter getSeizureInMostRecentEncounterOfType(
+			String name,
+			List <EncounterType> encounterTypes,
+			ObservationInMostRecentEncounterOfType observationInMostRecentEncounterOfType) {
+		return getObservationInMostRecentEncounter(name,
+				gp.getConcept(GlobalPropertiesManagement.SEIZURE_CONCEPT),null,
+				encounterTypes,null);
+	}
+
 	public static ObservationInMostRecentEncounterOfType getNextVisitInMostRecentEncounterOfTypes(
 			String name,
 			EncounterType encounterType,
