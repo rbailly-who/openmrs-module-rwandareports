@@ -620,7 +620,14 @@ $(document).ready(function(){
 <td>At site</td>
 <td><a href="${pageContext.request.contextPath}/module/rwandareports/register_MonthlyExecutiveDashboardMetricsReport.form" onclick=msgreg(this)>(Re) register</a></td>
 <td><a href="${pageContext.request.contextPath}/module/rwandareports/remove_MonthlyExecutiveDashboardMetricsReport.form" onclick=msgrem(this)>Remove</a></td>
-
+</tr>
+<tr >
+<td class="tabletd"> Lab Reports </td>
+<td> Lab - Results Report </td>
+<td>At site</td>
+<td><a href="${pageContext.request.contextPath}/module/rwandareports/register_LabResultReport.form" onclick=msgreg(this)>(Re) register</a></td>
+<td><a href="${pageContext.request.contextPath}/module/rwandareports/remove_LabResultReport.form" onclick=msgrem(this)>Remove</a></td>
+</tr>
 
 
 

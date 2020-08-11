@@ -2738,6 +2738,12 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>reports.ScheduledClassifications</property>
+		<defaultValue>ALLSERVERS</defaultValue>
+		<description>Rwanda Report ScheduledClassification Reports. This should be ALLSERVERS,ONCOLOGY,HOSPITAL</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>reports.hypertensionDDBformId</property>
 		<defaultValue>57b07582-2b35-4656-8cb2-939bb09cc02c</defaultValue>
 		<description>The id of the form for the hypertension ddb</description>

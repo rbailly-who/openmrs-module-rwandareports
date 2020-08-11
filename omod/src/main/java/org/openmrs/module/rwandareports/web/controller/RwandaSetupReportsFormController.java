@@ -1020,4 +1020,15 @@ public class RwandaSetupReportsFormController {
 		new SetupDataEntryQuantityReport().delete();
 		return new ModelAndView(new RedirectView("rwandareports.form"));
 	}
+	@RequestMapping("/module/rwandareports/register_LabResultReport")
+	public ModelAndView registerGenericLabResultReport() throws Exception {
+		new SetupLabResultReports().setup();
+		return new ModelAndView(new RedirectView("rwandareports.form"));
+	}
+
+	@RequestMapping("/module/rwandareports/remove_LabResultReport")
+	public ModelAndView removeGenericLabResultReport() throws Exception {
+		new SetupLabResultReports().delete();
+		return new ModelAndView(new RedirectView("rwandareports.form"));
+	}
 }

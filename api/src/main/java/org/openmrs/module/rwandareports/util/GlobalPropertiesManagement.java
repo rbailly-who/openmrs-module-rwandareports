@@ -467,6 +467,8 @@ public class GlobalPropertiesManagement {
 	public final static String PEAK_FLOW_BEFORE_SALBUTAMOL="reports.peakFlowBeforeSalbutamolConcept";
 	
 	public final static String ASTHMA_CLASSIFICATION="reports.asthmaclassificationConcept";
+	public final static String SCHEDULED_REPORT_CLASSIFICATION ="reports.ScheduledClassifications";
+
 
 	public final static String INTERMITTENT_ASTHMA="reports.intermittentasthma";
 	

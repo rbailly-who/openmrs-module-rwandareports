@@ -36,7 +36,9 @@ public class CleanReportingTablesAndRegisterAllReports {
 	//public enum ReportCategories{ HIV,NCD,CENTRAL,SITE,ONCOLOGY,CHW}
 	
 	public static String classification= Context.getAdministrationService().getGlobalProperty(GlobalPropertiesManagement.REPORT_CLASSIFICATION);
-	
+	public static String scheduledclassification= Context.getAdministrationService().getGlobalProperty(GlobalPropertiesManagement.SCHEDULED_REPORT_CLASSIFICATION);
+
+
 	public static void cleanTables() throws Exception {				
 	
 		
@@ -195,4 +197,96 @@ public class CleanReportingTablesAndRegisterAllReports {
 		new SetupMentalHealthIndicatorReport().setup();
 	}
 
-}
+
+
+	public static void registerScheduledReports() throws Exception {
+		String[] Scheduledclassification=scheduledclassification.split(",");
+
+		for (String category : Scheduledclassification) {
+			if(category.equalsIgnoreCase("ALLSERVERS"))
+				registerScheduledAllServersReports();
+			else if(category.equalsIgnoreCase("ONCOLOGY"))
+			{
+				registerScheduledOncologyReports();
+			}
+			else if(category.equalsIgnoreCase("HOSPITAL"))
+			{
+				registerScheduledHospitalReports();
+			}
+		}
+	}
+
+	public static void registerScheduledAllServersReports() throws Exception{
+		new SetupDataEntryQuantityReport().setup();
+		new SetupHMISIndicatorMonthlyReport().setup();
+		new SetupDataEntryDelayReport().setup();
+		new SetupDataQualityIndicatorReport().setup();
+		new SetupHIVResearchDataQualitySheet().setup();
+		new SetupGenericDrugReport().setup();
+		new SetupGenericEncounterReport().setup();
+		new SetupGenericPatientByProgramReport().setup();
+		new SetupAdultLateVisitAndCD4Report().setup();
+		new SetupAdultHIVConsultationSheet().setup();
+		new SetupHMISRwandaReportBySite().setup();
+		new SetupIDProgramQuarterlyIndicatorReport().setup();
+		new SetupPediHIVConsultationSheet().setup();
+		new SetupCombinedHFCSPConsultationReport().setup();
+		new SetupPMTCTCombinedClinicMotherMonthlyReport().setup();
+		new SetupExposedClinicInfantMonthly().setup();
+		new SetupPMTCTPregnancyConsultationReport().setup();
+		new SetupPMTCTPregnancyMonthlyReport().setup();
+		new SetupMentalHealthConsultationSheet().setup();
+		new SetupMentalHealthLateVisit().setup();
+		new SetupMentalHealthIndicatorReport().setup();
+		new SetupMonthlyExecutiveDashboardMetricsReport().setup();
+		new SetupAsthmaConsultationSheet().setup();
+		new SetupAsthmaQuarterlyAndMonthReport().setup();
+		new SetupAsthmaLateVisit().setup();
+		new SetupCKDConsultationSheetReport().setup();
+		new SetupCKDMissedvisitReport().setup();
+		new SetupCKDQuarterlyAndMonthlyReport().setup();
+		new SetupDiabetesConsultAndLTFU().setup();
+		new SetupDiabetesQuarterlyAndMonthReport().setup();
+		new SetupHypertensionConsultationSheet().setup();
+		new SetupHypertensionQuarterlyAndMonthlyReport().setup();
+		new SetupHypertensionLateVisit().setup();
+		new SetupPDCMissedVisits().setup();
+		new SetupPDCMonthlyLTFU().setup();
+		new SetupPDCIndicatorReport().setup();
+		new SetupPDCWeeklyAlert().setup();
+		new SetupEligibleForViralLoadReport().setup();
+	}
+	public static void registerScheduledOncologyReports() throws Exception{
+		new SetupOncologyTestPatientList().setup();
+		new SetupOncologyDailyDrugList().setup();
+		new SetupChemotherapyDailyExpectedPatientList().setup();
+		new SetupMissedChemotherapyPatientList().setup();
+		new SetupOncologyTreatmentAdministrationPlan().setup();
+		new SetupOncologyExternalBiopsyContactList().setup();
+		new SetupOncologyQuarterlyIndicatorReport().setup();
+		new SetupOncologyDataExtractionSheet().setup();
+		new SetupChemotherapyExpectedPatientList().setup();
+		new SetupOncologyOutpatientExpectedPatientList().setup();
+		new SetupOncologyOutpatientAppointmentList().setup();
+		new SetupOncologyOutpatientClinicPatientList().setup();
+		new SetupOncologyRegistry().setup();
+		new SetupOncologyOutpatientClinicMissedVisit().setup();
+		new SetupOncologyInpatientClinicMissedVisit().setup();
+	}
+	public static void registerScheduledHospitalReports() throws Exception{
+		new SetupHeartFailureConsultSheet().setup();
+		new SetupHeartFailureQuarterlyAndMonthlyReport().setup();
+		new SetupQuarterlyCrossSiteIndicatorByDistrictReport().setup();
+		new SetupHeartFailureLateVisit().setup();
+		new SetupQuarterlyViralLoadReport().setup();
+		new SetupOncologyOutpatientExpectedPatientList().setup();
+		new SetupOncologyOutpatientClinicMissedVisit().setup();
+		new SetupOncologyInpatientClinicMissedVisit().setup();
+		new SetupOncologyOutpatientAppointmentList().setup();
+		new SetupOncologyOutpatientClinicPatientList().setup();
+		new SetupOncologyDailyDrugList().setup();
+		new SetupChemotherapyDailyExpectedPatientList().setup();
+		new SetupMissedChemotherapyPatientList().setup();
+
+	}
+	}

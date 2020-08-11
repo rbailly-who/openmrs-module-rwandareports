@@ -36,7 +36,7 @@ public class RegisterReportsTask extends SessionTask {
 			String oldversion = Context.getAdministrationService().getGlobalProperty("reports.moduleVersion");
 			if(!version.equals(oldversion)){
 				CleanReportingTablesAndRegisterAllReports.cleanTables();
-				CleanReportingTablesAndRegisterAllReports.registerReports();
+				CleanReportingTablesAndRegisterAllReports.registerScheduledReports();
 				Context.getAdministrationService().saveGlobalProperty(new GlobalProperty("reports.moduleVersion", version));
 			}
 		}
