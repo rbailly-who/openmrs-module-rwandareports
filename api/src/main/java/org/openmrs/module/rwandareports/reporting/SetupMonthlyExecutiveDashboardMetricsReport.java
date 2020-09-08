@@ -209,6 +209,14 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
 
         GenderCohortDefinition femaleCohort = Cohorts.createFemaleCohortDefinition("femalesDefinition");
 
+        GenderCohortDefinition maleCohort = Cohorts.createMaleCohortDefinition("maleCohort");
+
+
+
+        SqlCohortDefinition hospitalPatients=Cohorts.createHospitalPatientCohort("hospitalPatients");
+
+
+
         // ONCOLOGY
         //=========================================================================
         // A1: # of Oncology Active patients (With a visit within a year and not exited)  //
@@ -414,7 +422,7 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
                 ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
 
 
-        //NCD
+        //NCD HC
 
         //=============================================================================
         // B1: # of Active NCD patients (With a visit within a year and not exited)  //
@@ -440,7 +448,8 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
                 "2",
                 new Mapped<CohortDefinition>(NCDpatientSeen, ParameterizableUtil
                         .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
-        NCDActivePatientComposition.setCompositionString("1 AND 2");
+        NCDActivePatientComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+        NCDActivePatientComposition.setCompositionString("1 AND 2 AND (NOT 3)");
 
         CohortIndicator NCDActivePatientMonthlyIndicator = Indicators.newCountIndicator("NCDActivePatientMonthlyIndicator",
                 NCDActivePatientComposition,
@@ -460,7 +469,9 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
         femaleNCDActivePatientComposition.getSearches().put(
                 "2",
                 new Mapped<CohortDefinition>(femaleCohort, null));
-        femaleNCDActivePatientComposition.setCompositionString("1 AND 2");
+        femaleNCDActivePatientComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+
+        femaleNCDActivePatientComposition.setCompositionString("1 AND 2 AND NOT 3");
 
         CohortIndicator femaleNCDActivePatientMonthlyIndicator = Indicators.newCountIndicator("femaleNCDActivePatientMonthlyIndicator",
                 femaleNCDActivePatientComposition,
@@ -475,10 +486,10 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
         InProgramCohortDefinition inAsthmaProgram = Cohorts.createInProgramParameterizableByStartEndDate("inAsthmaProgram",
                 asthmaProgram);
 
-        dsd.addColumn("AsthmaPatientsDied", "# of Asthma Patients Died", new Mapped(patientExitReason(inAsthmaProgram,patientDied),
+        dsd.addColumn("AsthmaPatientsDied", "# of Asthma Patients Died", new Mapped(patientExitReason(inAsthmaProgram,hospitalPatients,patientDied),
                 ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
 
-        dsd.addColumn("femaleAsthmaPatientsDied", "# of Asthma female Patients Died", new Mapped(femaleExitReason(inAsthmaProgram,femaleCohort,patientDied),
+        dsd.addColumn("femaleAsthmaPatientsDied", "# of Asthma female Patients Died", new Mapped(femaleExitReason(inAsthmaProgram,hospitalPatients,femaleCohort,patientDied),
                 ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
         //=========================================================================
         // B3: # of  Diabetes patients who died                                  //
@@ -487,10 +498,10 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
         InProgramCohortDefinition inDiabetesProgram = Cohorts.createInProgramParameterizableByStartEndDate("inDiabetesProgram",
                 diabetesProgram);
 
-        dsd.addColumn("DiabetesPatientsDied", "# of Diabetes Patients Died", new Mapped(patientExitReason(inDiabetesProgram,patientDied),
+        dsd.addColumn("DiabetesPatientsDied", "# of Diabetes Patients Died", new Mapped(patientExitReason(inDiabetesProgram,hospitalPatients,patientDied),
                 ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
 
-        dsd.addColumn("femaleDiabetesPatientsDied", "# of Diabetes female Patients Died", new Mapped(femaleExitReason(inDiabetesProgram,femaleCohort,patientDied),
+        dsd.addColumn("femaleDiabetesPatientsDied", "# of Diabetes female Patients Died", new Mapped(femaleExitReason(inDiabetesProgram,hospitalPatients,femaleCohort,patientDied),
                 ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
 
         //=========================================================================
@@ -500,10 +511,10 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
         InProgramCohortDefinition inHFProgram = Cohorts.createInProgramParameterizableByStartEndDate("inHFProgram",
                 heartFailureProgram);
 
-        dsd.addColumn("HeartFailurePatientsDied", "# of Heart Failure Patients Died", new Mapped(patientExitReason(inHFProgram,patientDied),
+        dsd.addColumn("HeartFailurePatientsDied", "# of Heart Failure Patients Died", new Mapped(patientExitReason(inHFProgram,hospitalPatients,patientDied),
                 ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
 
-        dsd.addColumn("femaleHeartFailurePatientsDied", "# of Diabetes female Patients Died", new Mapped(femaleExitReason(inHFProgram,femaleCohort,patientDied),
+        dsd.addColumn("femaleHeartFailurePatientsDied", "# of Diabetes female Patients Died", new Mapped(femaleExitReason(inHFProgram,hospitalPatients,femaleCohort,patientDied),
                 ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
 
         //=========================================================================
@@ -513,10 +524,10 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
         InProgramCohortDefinition inHypertensionProgram = Cohorts.createInProgramParameterizableByStartEndDate("inHypertensionProgram",
                 hypertesionProgram);
 
-        dsd.addColumn("HypertensionPatientsDied", "# of Hypertension Patients Died", new Mapped(patientExitReason(inHypertensionProgram,patientDied),
+        dsd.addColumn("HypertensionPatientsDied", "# of Hypertension Patients Died", new Mapped(patientExitReason(inHypertensionProgram,hospitalPatients,patientDied),
                 ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
 
-        dsd.addColumn("femaleHypertensionPatientsDied", "# of Hypertension female Patients Died", new Mapped(femaleExitReason(inHypertensionProgram,femaleCohort,patientDied),
+        dsd.addColumn("femaleHypertensionPatientsDied", "# of Hypertension female Patients Died", new Mapped(femaleExitReason(inHypertensionProgram,hospitalPatients,femaleCohort,patientDied),
                 ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
 
 
@@ -541,7 +552,8 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
                 new Mapped<CohortDefinition>(inNCDPrograms, ParameterizableUtil
 
                         .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
-        NCDpatientsSeenComposition.setCompositionString("1 AND 2");
+        NCDpatientsSeenComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+        NCDpatientsSeenComposition.setCompositionString("1 AND 2 AND NOT 3");
 
         CohortIndicator NCDpatientsSeenMonthlyIndicator = Indicators.newCountIndicator("NCDpatientsSeenMonthlyIndicator",
                 NCDpatientsSeenComposition,
@@ -563,7 +575,9 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
         femaleNCDpatientsSeenComposition.getSearches().put(
                 "2",
                 new Mapped<CohortDefinition>(femaleCohort, null));
-        femaleNCDpatientsSeenComposition.setCompositionString("1 AND 2");
+        femaleNCDpatientsSeenComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+
+        femaleNCDpatientsSeenComposition.setCompositionString("1 AND 2 AND NOT 3");
 
         CohortIndicator femaleNCDpatientsSeenMonthlyIndicator = Indicators.newCountIndicator("femaleNCDpatientsSeenMonthlyIndicator",
                 femaleNCDpatientsSeenComposition,
@@ -595,7 +609,7 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
 
 
 
-        CompositionCohortDefinition AsthmaActivePatientsComposition = activePatientOfADisease(NCDpatientSeen,inAsthmaProgram);
+        CompositionCohortDefinition AsthmaActivePatientsComposition = activePatientOfADisease(NCDpatientSeen,hospitalPatients,inAsthmaProgram);
         CohortIndicator AsthmaActivePatientsIndicator = Indicators.newCountIndicator("AsthmaActivePatientsIndicator",
                 AsthmaActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
         dsd.addColumn("asthmaActivePatients", "# of active asthma patients ", new Mapped(AsthmaActivePatientsIndicator,
@@ -604,13 +618,18 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
 
 
 
-        CompositionCohortDefinition AsthmaActivePatientsNotSeenIn6MonthsComposition = ActivePatientsNotSeenIn6MonthsComposition(AsthmaActivePatientsComposition,NCDpatientSeen);
+        CompositionCohortDefinition AsthmaActivePatientsNotSeenIn6MonthsComposition = ActivePatientsNotSeenIn6MonthsComposition(AsthmaActivePatientsComposition,hospitalPatients,NCDpatientSeen);
 
         CohortIndicator AsthmaActivePatientsNotSeenIn6MonthsIndicator = Indicators.newCountIndicator("AsthmaActivePatientsNotSeenIn6MonthsIndicator",
                 AsthmaActivePatientsNotSeenIn6MonthsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
-        dsd.addColumn("asthmaactivePatientsNotSeenIn6Months", "# of active asthma patients with no visit in 6 months", new Mapped(AsthmaActivePatientsNotSeenIn6MonthsIndicator,
+        /*dsd.addColumn("asthmaactivePatientsNotSeenIn6Months", "# of active asthma patients with no visit in 6 months", new Mapped(AsthmaActivePatientsNotSeenIn6MonthsIndicator,
                 ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+*/
+        CohortIndicator percentAsthmaActivePatientsNotSeenIn6MonthsIndicator=Indicators.newFractionIndicator("percentAsthmaActivePatientsNotSeenIn6MonthsIndicator",AsthmaActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),AsthmaActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
 
+        dsd.addColumn("asthmaactivePatientsNotSeenIn6Months", "% of active asthma patients with no visit in 6 months", new Mapped(percentAsthmaActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
 
 
         // female number
@@ -627,8 +646,27 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
         CohortIndicator femaleAsthmaActivePatientsNotSeenIn6MonthsIndicator = Indicators.newCountIndicator("femaleAsthmaActivePatientsNotSeenIn6MonthsIndicator",
                 femaleAsthmaActivePatientsNotSeenIn6MonthsComposition,
                 ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
-        dsd.addColumn("femaleAsthmaactivePatientsNotSeenIn6Months", "# of female active asthma patients with no visit in 6 months", new Mapped(femaleAsthmaActivePatientsNotSeenIn6MonthsIndicator,
+       /* dsd.addColumn("femaleAsthmaactivePatientsNotSeenIn6Months", "# of female active asthma patients with no visit in 6 months", new Mapped(femaleAsthmaActivePatientsNotSeenIn6MonthsIndicator,
                 ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+*/
+
+        CohortIndicator percentfemaleAsthmaActivePatientsNotSeenIn6MonthsIndicator=Indicators.newFractionIndicator("percentfemaleAsthmaActivePatientsNotSeenIn6MonthsIndicator",femaleAsthmaActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),femaleAsthmaActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("femaleAsthmaactivePatientsNotSeenIn6Months", "# of female active asthma patients with no visit in 6 months", new Mapped(percentfemaleAsthmaActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+        // Male number
+        CompositionCohortDefinition maleAsthmaActivePatientsComposition = femaleComposition(AsthmaActivePatientsComposition,maleCohort);
+        CompositionCohortDefinition maleAsthmaActivePatientsNotSeenIn6MonthsComposition = femaleComposition(AsthmaActivePatientsNotSeenIn6MonthsComposition,maleCohort);
+
+        CohortIndicator percentmaleAsthmaActivePatientsNotSeenIn6MonthsIndicator=Indicators.newFractionIndicator("percentmaleAsthmaActivePatientsNotSeenIn6MonthsIndicator",maleAsthmaActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),maleAsthmaActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("maleAsthmaactivePatientsNotSeenIn6Months", "# of male active asthma patients with no visit in 6 months", new Mapped(percentmaleAsthmaActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
 
         //=========================================================================
         // B9: Of active Diabetes patients, % with no visit in 6 months            //
@@ -641,7 +679,7 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
 
 
 
-        CompositionCohortDefinition DiabetesActivePatientsComposition = activePatientOfADisease(NCDpatientSeen,inDiabetesProgram);
+        CompositionCohortDefinition DiabetesActivePatientsComposition = activePatientOfADisease(NCDpatientSeen,hospitalPatients,inDiabetesProgram);
         CohortIndicator DiabetesActivePatientsIndicator = Indicators.newCountIndicator("DiabetesActivePatientsIndicator",
                 DiabetesActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
         dsd.addColumn("diabetesActivePatients", "# of active Diabetes patients ", new Mapped(DiabetesActivePatientsIndicator,
@@ -650,11 +688,18 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
 
 
 
-        CompositionCohortDefinition DiabetesActivePatientsNotSeenIn6MonthsComposition = ActivePatientsNotSeenIn6MonthsComposition(DiabetesActivePatientsComposition,NCDpatientSeen);
+        CompositionCohortDefinition DiabetesActivePatientsNotSeenIn6MonthsComposition = ActivePatientsNotSeenIn6MonthsComposition(DiabetesActivePatientsComposition,hospitalPatients,NCDpatientSeen);
 
         CohortIndicator DiabetesActivePatientsNotSeenIn6MonthsIndicator = Indicators.newCountIndicator("DiabetesActivePatientsNotSeenIn6MonthsIndicator",
                 DiabetesActivePatientsNotSeenIn6MonthsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
-        dsd.addColumn("activeDiabetesPatientsNotSeenIn6Months", "# of active Diabetes patients with no visit in 6 months", new Mapped(DiabetesActivePatientsNotSeenIn6MonthsIndicator,
+        /*dsd.addColumn("activeDiabetesPatientsNotSeenIn6Months", "# of active Diabetes patients with no visit in 6 months", new Mapped(DiabetesActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+*/
+
+        CohortIndicator percentDiabetesActivePatientsNotSeenIn6MonthsIndicator=Indicators.newFractionIndicator("percentDiabetesActivePatientsNotSeenIn6MonthsIndicator",DiabetesActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),DiabetesActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("activeDiabetesPatientsNotSeenIn6Months", "% of active Diabetes patients with no visit in 6 months", new Mapped(percentDiabetesActivePatientsNotSeenIn6MonthsIndicator,
                 ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
 
 
@@ -673,8 +718,28 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
         CohortIndicator femaleDiabetesActivePatientsNotSeenIn6MonthsIndicator = Indicators.newCountIndicator("femaleDiabetesActivePatientsNotSeenIn6MonthsIndicator",
                 femaleDiabetesActivePatientsNotSeenIn6MonthsComposition,
                 ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
-        dsd.addColumn("femaleactiveDiabetesPatientsNotSeenIn6Months", "# of female active Diabetes patients with no visit in 6 months", new Mapped(femaleDiabetesActivePatientsNotSeenIn6MonthsIndicator,
+       /* dsd.addColumn("femaleactiveDiabetesPatientsNotSeenIn6Months", "# of female active Diabetes patients with no visit in 6 months", new Mapped(femaleDiabetesActivePatientsNotSeenIn6MonthsIndicator,
                 ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+*/
+
+        CohortIndicator percentfemaleDiabetesActivePatientsNotSeenIn6MonthsIndicator=Indicators.newFractionIndicator("percentfemaleDiabetesActivePatientsNotSeenIn6MonthsIndicator",femaleDiabetesActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),femaleDiabetesActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("femaleactiveDiabetesPatientsNotSeenIn6Months", "# of female active asthma patients with no visit in 6 months", new Mapped(percentfemaleDiabetesActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+        // Male number
+        CompositionCohortDefinition maleDiabetesActivePatientsComposition = femaleComposition(DiabetesActivePatientsComposition,maleCohort);
+        CompositionCohortDefinition maleDiabetesActivePatientsNotSeenIn6MonthsComposition = femaleComposition(DiabetesActivePatientsNotSeenIn6MonthsComposition,maleCohort);
+
+        CohortIndicator percentmaleDiabetesActivePatientsNotSeenIn6MonthsCompositionIndicator=Indicators.newFractionIndicator("percentmaleAsthmaActivePatientsNotSeenIn6MonthsIndicator",maleDiabetesActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),maleDiabetesActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("maleDiabetesactivePatientsNotSeenIn6Months", "# of male active Diabetes patients with no visit in 6 months", new Mapped(percentmaleDiabetesActivePatientsNotSeenIn6MonthsCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
 
         //=========================================================================
         // B10: Of active Heart failure patients, % with no visit in 6 months            //
@@ -687,7 +752,7 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
 
 
 
-        CompositionCohortDefinition heartFailureActivePatientsComposition = activePatientOfADisease(NCDpatientSeen,inHFProgram);
+        CompositionCohortDefinition heartFailureActivePatientsComposition = activePatientOfADisease(NCDpatientSeen,hospitalPatients,inHFProgram);
         CohortIndicator heartFailureActivePatientsIndicator = Indicators.newCountIndicator("heartFailureActivePatientsIndicator",
                 heartFailureActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
         dsd.addColumn("heartFailureActivePatients", "# of active heart Failure patients ", new Mapped(heartFailureActivePatientsIndicator,
@@ -696,12 +761,21 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
 
 
 
-        CompositionCohortDefinition heartFailureActivePatientsNotSeenIn6MonthsComposition = ActivePatientsNotSeenIn6MonthsComposition(heartFailureActivePatientsComposition,NCDpatientSeen);
+        CompositionCohortDefinition heartFailureActivePatientsNotSeenIn6MonthsComposition = ActivePatientsNotSeenIn6MonthsComposition(heartFailureActivePatientsComposition,hospitalPatients,NCDpatientSeen);
 
         CohortIndicator heartFailureActivePatientsNotSeenIn6MonthsIndicator = Indicators.newCountIndicator("heartFailureActivePatientsNotSeenIn6MonthsIndicator",
                 heartFailureActivePatientsNotSeenIn6MonthsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
-        dsd.addColumn("heartFailureactivePatientsNotSeenIn6Months", "# of active heart Failure patients with no visit in 6 months", new Mapped(heartFailureActivePatientsNotSeenIn6MonthsIndicator,
+       /* dsd.addColumn("heartFailureactivePatientsNotSeenIn6Months", "# of active heart Failure patients with no visit in 6 months", new Mapped(heartFailureActivePatientsNotSeenIn6MonthsIndicator,
                 ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+*/
+
+
+        CohortIndicator percentheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator=Indicators.newFractionIndicator("percentheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator",heartFailureActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),heartFailureActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("heartFailureactivePatientsNotSeenIn6Months", "% of active Heart failure patients with no visit in 6 months", new Mapped(percentheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
 
 
 
@@ -719,8 +793,27 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
         CohortIndicator femaleheartFailureActivePatientsNotSeenIn6MonthsIndicator = Indicators.newCountIndicator("femaleheartFailureActivePatientsNotSeenIn6MonthsIndicator",
                 femaleheartFailureActivePatientsNotSeenIn6MonthsComposition,
                 ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
-        dsd.addColumn("femaleheartFailureactivePatientsNotSeenIn6Months", "# of female active heart Failure patients with no visit in 6 months", new Mapped(femaleheartFailureActivePatientsNotSeenIn6MonthsIndicator,
+       /* dsd.addColumn("femaleheartFailureactivePatientsNotSeenIn6Months", "# of female active heart Failure patients with no visit in 6 months", new Mapped(femaleheartFailureActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");*/
+
+        CohortIndicator percentfemaleheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator=Indicators.newFractionIndicator("percentfemaleheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator",femaleheartFailureActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),femaleheartFailureActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("femaleheartFailureactivePatientsNotSeenIn6Months", "% of female active Heart failure patients with no visit in 6 months", new Mapped(percentfemaleheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator,
                 ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+
+        // Male number
+        CompositionCohortDefinition maleheartFailureActivePatientsComposition = femaleComposition(heartFailureActivePatientsComposition,maleCohort);
+        CompositionCohortDefinition maleheartFailureActivePatientsNotSeenIn6MonthsComposition = femaleComposition(heartFailureActivePatientsNotSeenIn6MonthsComposition,maleCohort);
+
+        CohortIndicator percentmalemaleheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator=Indicators.newFractionIndicator("percentmalemaleheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator",maleheartFailureActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),maleheartFailureActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("maleheartFailureactivePatientsNotSeenIn6Months", "% of male active Heart Failure patients with no visit in 6 months", new Mapped(percentmalemaleheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
 
 
         //=========================================================================
@@ -734,7 +827,7 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
 
 
 
-        CompositionCohortDefinition HypertensionActivePatientsComposition = activePatientOfADisease(NCDpatientSeen,inHypertensionProgram);
+        CompositionCohortDefinition HypertensionActivePatientsComposition = activePatientOfADisease(NCDpatientSeen,hospitalPatients,inHypertensionProgram);
         CohortIndicator HypertensionActivePatientsIndicator = Indicators.newCountIndicator("HypertensionActivePatientsIndicator",
                 HypertensionActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
         dsd.addColumn("HypertensionActivePatients", "# of active heart Failure patients ", new Mapped(HypertensionActivePatientsIndicator,
@@ -743,12 +836,18 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
 
 
 
-        CompositionCohortDefinition HypertensionActivePatientsNotSeenIn6MonthsComposition = ActivePatientsNotSeenIn6MonthsComposition(HypertensionActivePatientsComposition,NCDpatientSeen);
+        CompositionCohortDefinition HypertensionActivePatientsNotSeenIn6MonthsComposition = ActivePatientsNotSeenIn6MonthsComposition(HypertensionActivePatientsComposition,hospitalPatients,NCDpatientSeen);
         CohortIndicator HypertensionActivePatientsNotSeenIn6MonthsIndicator = Indicators.newCountIndicator("HypertensionActivePatientsNotSeenIn6MonthsIndicator",
                 HypertensionActivePatientsNotSeenIn6MonthsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
-        dsd.addColumn("HypertensionactivePatientsNotSeenIn6Months", "# of active heart Failure patients with no visit in 6 months", new Mapped(HypertensionActivePatientsNotSeenIn6MonthsIndicator,
+       /* dsd.addColumn("HypertensionactivePatientsNotSeenIn6Months", "# of active heart Failure patients with no visit in 6 months", new Mapped(HypertensionActivePatientsNotSeenIn6MonthsIndicator,
                 ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+*/
 
+        CohortIndicator percentHypertensionActivePatientsNotSeenIn6MonthsCompositionIndicator=Indicators.newFractionIndicator("percentHypertensionActivePatientsNotSeenIn6MonthsCompositionIndicator",HypertensionActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),HypertensionActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("HypertensionactivePatientsNotSeenIn6Months", "% of active Hypertension patients with no visit in 6 months", new Mapped(percentHypertensionActivePatientsNotSeenIn6MonthsCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
 
 
         // female number
@@ -756,7 +855,7 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
 
         CohortIndicator femaleHypertensionActivePatientsIndicator = Indicators.newCountIndicator("femaleHypertensionActivePatientsIndicator",
                 femaleHypertensionActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
-        dsd.addColumn("femaleHypertensionActivePatients", "# of female active heart Failure patients with no visit in 6 months", new Mapped(femaleHypertensionActivePatientsIndicator,
+        dsd.addColumn("femaleHypertensionActivePatients", "# of female active Hypertension patients with no visit in 6 months", new Mapped(femaleHypertensionActivePatientsIndicator,
                 ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
 
 
@@ -765,8 +864,457 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
         CohortIndicator femaleHypertensionActivePatientsNotSeenIn6MonthsIndicator = Indicators.newCountIndicator("femaleHypertensionActivePatientsNotSeenIn6MonthsIndicator",
                 femaleHypertensionActivePatientsNotSeenIn6MonthsComposition,
                 ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
-        dsd.addColumn("femaleHypertensionactivePatientsNotSeenIn6Months", "# of female active heart Failure patients with no visit in 6 months", new Mapped(femaleHypertensionActivePatientsNotSeenIn6MonthsIndicator,
+       /* dsd.addColumn("femaleHypertensionactivePatientsNotSeenIn6Months", "# of female active heart Failure patients with no visit in 6 months", new Mapped(femaleHypertensionActivePatientsNotSeenIn6MonthsIndicator,
                 ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+*/
+
+
+        CohortIndicator percentfemaleHypertensionActivePatientsNotSeenIn6MonthsCompositionIndicator=Indicators.newFractionIndicator("percentfemaleheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator",femaleHypertensionActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),femaleHypertensionActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("femaleHypertensionactivePatientsNotSeenIn6Months", "% of female active Hypertension patients with no visit in 6 months", new Mapped(percentfemaleHypertensionActivePatientsNotSeenIn6MonthsCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+        // Male number
+        CompositionCohortDefinition maleHypertensionActivePatientsComposition = femaleComposition(HypertensionActivePatientsComposition,maleCohort);
+        CompositionCohortDefinition maleHypertensionActivePatientsNotSeenIn6MonthsComposition = femaleComposition(HypertensionActivePatientsNotSeenIn6MonthsComposition,maleCohort);
+
+        CohortIndicator percentmaleHypertensionActivePatientsNotSeenIn6MonthsCompositionIndicator=Indicators.newFractionIndicator("percentmaleHypertensionActivePatientsNotSeenIn6MonthsCompositionIndicator",maleHypertensionActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),maleHypertensionActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("maleheartFailureactivePatientsNotSeenIn6Months", "% of male active Hypertension patients with no visit in 6 months", new Mapped(percentmaleHypertensionActivePatientsNotSeenIn6MonthsCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+
+
+        //NCD Hospital
+
+        //=============================================================================
+        // B1: # of Active NCD patients (With a visit within a year and not exited)  //
+        //============================================================================
+
+       //total number
+        CompositionCohortDefinition hospitalNCDActivePatientComposition = new CompositionCohortDefinition();
+        hospitalNCDActivePatientComposition.setName("NCDActivePatientComposition");
+        hospitalNCDActivePatientComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        hospitalNCDActivePatientComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+        hospitalNCDActivePatientComposition.getSearches().put(
+                "1",
+                new Mapped<CohortDefinition>(inNCDPrograms, ParameterizableUtil
+
+                        .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrBefore}")));
+        hospitalNCDActivePatientComposition.getSearches().put(
+                "2",
+                new Mapped<CohortDefinition>(NCDpatientSeen, ParameterizableUtil
+                        .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        hospitalNCDActivePatientComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+        hospitalNCDActivePatientComposition.setCompositionString("1 AND 2 AND 3");
+
+        CohortIndicator hospitalNCDActivePatientMonthlyIndicator = Indicators.newCountIndicator("hospitalNCDActivePatientMonthlyIndicator",
+                hospitalNCDActivePatientComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+        dsd.addColumn("hospitalNCDActivePatient", "# of hospital NCD Active patients (With a visit within a year and not exited)", new Mapped(hospitalNCDActivePatientMonthlyIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+        // female number
+        CompositionCohortDefinition hospitalfemaleNCDActivePatientComposition = new CompositionCohortDefinition();
+        hospitalfemaleNCDActivePatientComposition.setName("hospitalfemaleNCDActivePatientComposition");
+        hospitalfemaleNCDActivePatientComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        hospitalfemaleNCDActivePatientComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+        hospitalfemaleNCDActivePatientComposition.getSearches().put(
+                "1",
+                new Mapped<CohortDefinition>(NCDActivePatientComposition, ParameterizableUtil
+                        .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        hospitalfemaleNCDActivePatientComposition.getSearches().put(
+                "2",
+                new Mapped<CohortDefinition>(femaleCohort, null));
+        hospitalfemaleNCDActivePatientComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+
+        hospitalfemaleNCDActivePatientComposition.setCompositionString("1 AND 2 AND 3");
+
+        CohortIndicator hospitalfemaleNCDActivePatientMonthlyIndicator = Indicators.newCountIndicator("hospitalfemaleNCDActivePatientMonthlyIndicator",
+                hospitalfemaleNCDActivePatientComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+        dsd.addColumn("hospitalfemaleNCDActivePatient", "# of hospital NCD female Active patients (With a visit within a year and not exited)", new Mapped(hospitalfemaleNCDActivePatientMonthlyIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+        //=========================================================================
+        // B2: # of  Asthma patients who died                                    //
+        //=========================================================================
+
+        dsd.addColumn("hospitalAsthmaPatientsDied", "# of Hospital Asthma Patients Died", new Mapped(hospitalPatientExitReason(inAsthmaProgram,hospitalPatients,patientDied),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+        dsd.addColumn("hospitalfemaleAsthmaPatientsDied", "# of Hospital Asthma female Patients Died", new Mapped(hospitalFemaleExitReason(inAsthmaProgram,hospitalPatients,femaleCohort,patientDied),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+        //=========================================================================
+        // B3: # of  Diabetes patients who died                                  //
+        //=========================================================================
+
+       dsd.addColumn("hospitalDiabetesPatientsDied", "# of Hospital Diabetes Patients Died", new Mapped(hospitalPatientExitReason(inDiabetesProgram,hospitalPatients,patientDied),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+        dsd.addColumn("hospitalfemaleDiabetesPatientsDied", "# of Hospital Diabetes female Patients Died", new Mapped(hospitalFemaleExitReason(inDiabetesProgram,hospitalPatients,femaleCohort,patientDied),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+        //=========================================================================
+        // B4: # of  Heart Failure patients who died                             //
+        //=========================================================================
+
+        dsd.addColumn("hospitalHeartFailurePatientsDied", "# of Hospital Heart Failure Patients Died", new Mapped(hospitalPatientExitReason(inHFProgram,hospitalPatients,patientDied),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+        dsd.addColumn("hospitalfemaleHeartFailurePatientsDied", "# of Hospital Diabetes female Patients Died", new Mapped(hospitalFemaleExitReason(inHFProgram,hospitalPatients,femaleCohort,patientDied),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+        //=========================================================================
+        // B5: # of  Hypertension patients who died                              //
+        //=========================================================================
+
+       dsd.addColumn("hospitalHypertensionPatientsDied", "# of Hospital Hypertension Patients Died", new Mapped(hospitalPatientExitReason(inHypertensionProgram,hospitalPatients,patientDied),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+        dsd.addColumn("hospitalfemaleHypertensionPatientsDied", "# of Hospital Hypertension female Patients Died", new Mapped(hospitalFemaleExitReason(inHypertensionProgram,hospitalPatients,femaleCohort,patientDied),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+
+        //=========================================================================
+        // B6: # of  Patients who have had a visit within the year               //
+        //=========================================================================
+        CompositionCohortDefinition hospitalNCDpatientsSeenComposition = new CompositionCohortDefinition();
+        hospitalNCDpatientsSeenComposition.setName("hospitalNCDpatientsSeenComposition");
+        hospitalNCDpatientsSeenComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        hospitalNCDpatientsSeenComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+//
+        hospitalNCDpatientsSeenComposition.getSearches().put(
+                "1",
+                new Mapped<CohortDefinition>(NCDpatientsSeen, ParameterizableUtil
+                        .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        hospitalNCDpatientsSeenComposition.getSearches().put(
+                "2",
+                new Mapped<CohortDefinition>(inNCDPrograms, ParameterizableUtil
+
+                        .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        hospitalNCDpatientsSeenComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+        hospitalNCDpatientsSeenComposition.setCompositionString("1 AND 2 AND 3");
+
+        CohortIndicator hospitalNCDpatientsSeenMonthlyIndicator = Indicators.newCountIndicator("hospitalNCDpatientsSeenMonthlyIndicator",
+                hospitalNCDpatientsSeenComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+        dsd.addColumn("hosptitalNCDpatientsSeenInaYear", "# of hospital NCD patients Seen In a Year", new Mapped(hospitalNCDpatientsSeenMonthlyIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+
+        // female number
+        CompositionCohortDefinition hospitalfemaleNCDpatientsSeenComposition = new CompositionCohortDefinition();
+        hospitalfemaleNCDpatientsSeenComposition.setName("hospitalfemaleNCDpatientsSeenComposition");
+        hospitalfemaleNCDpatientsSeenComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        hospitalfemaleNCDpatientsSeenComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+        hospitalfemaleNCDpatientsSeenComposition.getSearches().put(
+                "1",
+                new Mapped<CohortDefinition>(NCDpatientsSeenComposition, ParameterizableUtil
+                        .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        hospitalfemaleNCDpatientsSeenComposition.getSearches().put(
+                "2",
+                new Mapped<CohortDefinition>(femaleCohort, null));
+        hospitalfemaleNCDpatientsSeenComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+
+        hospitalfemaleNCDpatientsSeenComposition.setCompositionString("1 AND 2 AND 3");
+
+        CohortIndicator hospitalfemaleNCDpatientsSeenMonthlyIndicator = Indicators.newCountIndicator("hospitalfemaleNCDpatientsSeenMonthlyIndicator",
+                hospitalfemaleNCDpatientsSeenComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+        dsd.addColumn("hospitalfemaleNCDpatientsSeenInaYear", "# of hospital female NCD patients Seen In a Year", new Mapped(hospitalfemaleNCDpatientsSeenMonthlyIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+        //=========================================================================
+        // B7: # of  Active Patients act the beginning of the period             //
+        //=========================================================================
+
+
+        dsd.addColumn("hospitalNCDActivePatientAtTheBeginningOfperiod", "# of hospital NCD Active patients (With a visit within a year and not exited) At The Beginning Of period ", new Mapped(hospitalNCDActivePatientMonthlyIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${startDate}")), "");
+
+        dsd.addColumn("hospitalfemaleNCDActivePatientAtTheBeginningOfperiod", "# of hospital NCD female Active patients (With a visit within a year and not exited) At The Beginning Of period", new Mapped(hospitalfemaleNCDActivePatientMonthlyIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${startDate}")), "");
+
+
+        //=========================================================================
+        // B8: Of active asthma patients, % with no visit in 6 months            //
+        //=========================================================================
+
+        CompositionCohortDefinition hospitalAsthmaActivePatientsComposition = hospitalActivePatientOfADisease(NCDpatientSeen,hospitalPatients,inAsthmaProgram);
+        CohortIndicator hospitalAsthmaActivePatientsIndicator = Indicators.newCountIndicator("hospitalAsthmaActivePatientsIndicator",
+                hospitalAsthmaActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+        dsd.addColumn("hospitalasthmaActivePatients", "# of hospital active asthma patients ", new Mapped(hospitalAsthmaActivePatientsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+
+
+        CompositionCohortDefinition hospitalAsthmaActivePatientsNotSeenIn6MonthsComposition = hospitalActivePatientsNotSeenIn6MonthsComposition(AsthmaActivePatientsComposition,hospitalPatients,NCDpatientSeen);
+
+        CohortIndicator hospitalAsthmaActivePatientsNotSeenIn6MonthsIndicator = Indicators.newCountIndicator("hospitalAsthmaActivePatientsNotSeenIn6MonthsIndicator",
+                hospitalAsthmaActivePatientsNotSeenIn6MonthsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+        /*dsd.addColumn("asthmaactivePatientsNotSeenIn6Months", "# of active asthma patients with no visit in 6 months", new Mapped(AsthmaActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+*/
+        CohortIndicator hospitalpercentAsthmaActivePatientsNotSeenIn6MonthsIndicator=Indicators.newFractionIndicator("hospitalpercentAsthmaActivePatientsNotSeenIn6MonthsIndicator",hospitalAsthmaActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),hospitalAsthmaActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("hospitalasthmaactivePatientsNotSeenIn6Months", "% of hospital active asthma patients with no visit in 6 months", new Mapped(hospitalpercentAsthmaActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+        // female number
+        CompositionCohortDefinition hospitalfemaleAsthmaActivePatientsComposition = femaleComposition(hospitalAsthmaActivePatientsComposition,femaleCohort);
+
+        CohortIndicator hospitalfemaleAsthmaActivePatientsIndicator = Indicators.newCountIndicator("hospitalfemaleAsthmaActivePatientsIndicator",
+                hospitalfemaleAsthmaActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+        dsd.addColumn("hospitalfemaleasthmaActivePatients", "# of hospital female active asthma patients with no visit in 6 months", new Mapped(hospitalfemaleAsthmaActivePatientsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+        CompositionCohortDefinition hospitalfemaleAsthmaActivePatientsNotSeenIn6MonthsComposition = femaleComposition(hospitalAsthmaActivePatientsNotSeenIn6MonthsComposition,femaleCohort);
+
+        CohortIndicator hospitalfemaleAsthmaActivePatientsNotSeenIn6MonthsIndicator = Indicators.newCountIndicator("hospitalfemaleAsthmaActivePatientsNotSeenIn6MonthsIndicator",
+                hospitalfemaleAsthmaActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+       /* dsd.addColumn("femaleAsthmaactivePatientsNotSeenIn6Months", "# of female active asthma patients with no visit in 6 months", new Mapped(femaleAsthmaActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+*/
+
+        CohortIndicator hospitalpercentfemaleAsthmaActivePatientsNotSeenIn6MonthsIndicator=Indicators.newFractionIndicator("hospitalpercentfemaleAsthmaActivePatientsNotSeenIn6MonthsIndicator",hospitalfemaleAsthmaActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),hospitalfemaleAsthmaActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("hospitalfemaleAsthmaactivePatientsNotSeenIn6Months", "# of hospital female active asthma patients with no visit in 6 months", new Mapped(hospitalpercentfemaleAsthmaActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+        // Male number
+        CompositionCohortDefinition hospitalmaleAsthmaActivePatientsComposition = femaleComposition(hospitalAsthmaActivePatientsComposition,maleCohort);
+        CompositionCohortDefinition hospitalmaleAsthmaActivePatientsNotSeenIn6MonthsComposition = femaleComposition(hospitalAsthmaActivePatientsNotSeenIn6MonthsComposition,maleCohort);
+
+        CohortIndicator hospitalpercentmaleAsthmaActivePatientsNotSeenIn6MonthsIndicator=Indicators.newFractionIndicator("hospitalpercentmaleAsthmaActivePatientsNotSeenIn6MonthsIndicator",hospitalmaleAsthmaActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),hospitalmaleAsthmaActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("hospitalmaleAsthmaactivePatientsNotSeenIn6Months", "# of hospital male active asthma patients with no visit in 6 months", new Mapped(hospitalpercentmaleAsthmaActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+        //=========================================================================
+        // B9: Of active Diabetes patients, % with no visit in 6 months            //
+        //=========================================================================
+
+        CompositionCohortDefinition hospitalDiabetesActivePatientsComposition = hospitalActivePatientOfADisease(NCDpatientSeen,hospitalPatients,inDiabetesProgram);
+        CohortIndicator hospitalDiabetesActivePatientsIndicator = Indicators.newCountIndicator("DiabetesActivePatientsIndicator",
+                hospitalDiabetesActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+        dsd.addColumn("hospitaldiabetesActivePatients", "# of hospital active Diabetes patients ", new Mapped(hospitalDiabetesActivePatientsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+
+
+        CompositionCohortDefinition hospitalDiabetesActivePatientsNotSeenIn6MonthsComposition = ActivePatientsNotSeenIn6MonthsComposition(hospitalDiabetesActivePatientsComposition,hospitalPatients,NCDpatientSeen);
+
+        CohortIndicator hospitalDiabetesActivePatientsNotSeenIn6MonthsIndicator = Indicators.newCountIndicator("hospitalDiabetesActivePatientsNotSeenIn6MonthsIndicator",
+                hospitalDiabetesActivePatientsNotSeenIn6MonthsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+        /*dsd.addColumn("activeDiabetesPatientsNotSeenIn6Months", "# of active Diabetes patients with no visit in 6 months", new Mapped(DiabetesActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+*/
+
+        CohortIndicator hospitalpercentDiabetesActivePatientsNotSeenIn6MonthsIndicator=Indicators.newFractionIndicator("hosptalpercentDiabetesActivePatientsNotSeenIn6MonthsIndicator",hospitalDiabetesActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),hospitalDiabetesActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("hospitalactiveDiabetesPatientsNotSeenIn6Months", "% of hospital active Diabetes patients with no visit in 6 months", new Mapped(hospitalpercentDiabetesActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+
+        // female number
+        CompositionCohortDefinition hospitalfemaleDiabetesActivePatientsComposition = femaleComposition(hospitalDiabetesActivePatientsComposition,femaleCohort);
+
+        CohortIndicator hospitalfemaleDiabetesActivePatientsIndicator = Indicators.newCountIndicator("hospitalfemaleDiabetesActivePatientsIndicator",
+                hospitalfemaleDiabetesActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+        dsd.addColumn("hospitalfemaleDiabetesActivePatients", "# of female active Diabetes patients with no visit in 6 months", new Mapped(hospitalfemaleDiabetesActivePatientsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+        CompositionCohortDefinition hospitalfemaleDiabetesActivePatientsNotSeenIn6MonthsComposition = femaleComposition(hospitalDiabetesActivePatientsNotSeenIn6MonthsComposition,femaleCohort);
+
+        CohortIndicator hospitalfemaleDiabetesActivePatientsNotSeenIn6MonthsIndicator = Indicators.newCountIndicator("hospitalfemaleDiabetesActivePatientsNotSeenIn6MonthsIndicator",
+                hospitalfemaleDiabetesActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+       /* dsd.addColumn("femaleactiveDiabetesPatientsNotSeenIn6Months", "# of female active Diabetes patients with no visit in 6 months", new Mapped(femaleDiabetesActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+*/
+
+        CohortIndicator hospitalpercentfemaleDiabetesActivePatientsNotSeenIn6MonthsIndicator=Indicators.newFractionIndicator("hospitalpercentfemaleDiabetesActivePatientsNotSeenIn6MonthsIndicator",hospitalfemaleDiabetesActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),hospitalfemaleDiabetesActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("hospitalfemaleactiveDiabetesPatientsNotSeenIn6Months", "# of female active asthma patients with no visit in 6 months", new Mapped(hospitalpercentfemaleDiabetesActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+        // Male number
+        CompositionCohortDefinition hospitalmaleDiabetesActivePatientsComposition = femaleComposition(hospitalDiabetesActivePatientsComposition,maleCohort);
+        CompositionCohortDefinition hospitalmaleDiabetesActivePatientsNotSeenIn6MonthsComposition = femaleComposition(hospitalDiabetesActivePatientsNotSeenIn6MonthsComposition,maleCohort);
+
+        CohortIndicator hospitalpercentmaleDiabetesActivePatientsNotSeenIn6MonthsCompositionIndicator=Indicators.newFractionIndicator("hospitakpercentmaleAsthmaActivePatientsNotSeenIn6MonthsIndicator",hospitalmaleDiabetesActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),hospitalmaleDiabetesActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("hospitalmaleDiabetesactivePatientsNotSeenIn6Months", "# of hospital male active Diabetes patients with no visit in 6 months", new Mapped(hospitalpercentmaleDiabetesActivePatientsNotSeenIn6MonthsCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+
+        //=========================================================================
+        // B10: Of active Heart failure patients, % with no visit in 6 months            //
+        //=========================================================================
+
+        CompositionCohortDefinition hospitalheartFailureActivePatientsComposition = hospitalActivePatientOfADisease(NCDpatientSeen,hospitalPatients,inHFProgram);
+        CohortIndicator hospitalheartFailureActivePatientsIndicator = Indicators.newCountIndicator("hospitalheartFailureActivePatientsIndicator",
+                hospitalheartFailureActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+        dsd.addColumn("hospitalheartFailureActivePatients", "# of hospital active heart Failure patients ", new Mapped(hospitalheartFailureActivePatientsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+
+
+        CompositionCohortDefinition hospitalheartFailureActivePatientsNotSeenIn6MonthsComposition = hospitalActivePatientsNotSeenIn6MonthsComposition(heartFailureActivePatientsComposition,hospitalPatients,NCDpatientSeen);
+
+        CohortIndicator hospitalheartFailureActivePatientsNotSeenIn6MonthsIndicator = Indicators.newCountIndicator("hospitalheartFailureActivePatientsNotSeenIn6MonthsIndicator",
+                hospitalheartFailureActivePatientsNotSeenIn6MonthsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+       /* dsd.addColumn("heartFailureactivePatientsNotSeenIn6Months", "# of active heart Failure patients with no visit in 6 months", new Mapped(heartFailureActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+*/
+
+
+        CohortIndicator hospitalpercentheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator=Indicators.newFractionIndicator("hospitalpercentheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator",hospitalheartFailureActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),hospitalheartFailureActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("hospitalheartFailureactivePatientsNotSeenIn6Months", "% of hospital active Heart failure patients with no visit in 6 months", new Mapped(hospitalpercentheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+
+
+        // female number
+        CompositionCohortDefinition hospitalfemaleheartFailureActivePatientsComposition = femaleComposition(hospitalheartFailureActivePatientsComposition,femaleCohort);
+
+        CohortIndicator hospitalfemaleheartFailureActivePatientsIndicator = Indicators.newCountIndicator("hospitalfemaleheartFailureActivePatientsIndicator",
+                hospitalfemaleheartFailureActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+        dsd.addColumn("hospitalfemaleheartFailureActivePatients", "# of hospital female active heart Failure patients with no visit in 6 months", new Mapped(hospitalfemaleheartFailureActivePatientsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+        CompositionCohortDefinition hospitalfemaleheartFailureActivePatientsNotSeenIn6MonthsComposition = femaleComposition(hospitalheartFailureActivePatientsNotSeenIn6MonthsComposition,femaleCohort);
+
+        CohortIndicator hospitalfemaleheartFailureActivePatientsNotSeenIn6MonthsIndicator = Indicators.newCountIndicator("hospitalfemaleheartFailureActivePatientsNotSeenIn6MonthsIndicator",
+                hospitalfemaleheartFailureActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+       /* dsd.addColumn("femaleheartFailureactivePatientsNotSeenIn6Months", "# of female active heart Failure patients with no visit in 6 months", new Mapped(femaleheartFailureActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");*/
+
+        CohortIndicator hospitalpercentfemaleheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator=Indicators.newFractionIndicator("hospitalpercentfemaleheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator",hospitalfemaleheartFailureActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),hospitalfemaleheartFailureActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("hospitalfemaleheartFailureactivePatientsNotSeenIn6Months", "% of female active Heart failure patients with no visit in 6 months", new Mapped(hospitalpercentfemaleheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+
+        // Male number
+        CompositionCohortDefinition hospitalmaleheartFailureActivePatientsComposition = femaleComposition(hospitalheartFailureActivePatientsComposition,maleCohort);
+        CompositionCohortDefinition hospitalmaleheartFailureActivePatientsNotSeenIn6MonthsComposition = femaleComposition(hospitalheartFailureActivePatientsNotSeenIn6MonthsComposition,maleCohort);
+
+        CohortIndicator hospitalpercentmalemaleheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator=Indicators.newFractionIndicator("hospitalpercentmalemaleheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator",hospitalmaleheartFailureActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),hospitalmaleheartFailureActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("hospitalmaleheartFailureactivePatientsNotSeenIn6Months", "% of male hospital active Heart Failure patients with no visit in 6 months", new Mapped(hospitalpercentmalemaleheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+
+        //=========================================================================
+        // B11: Of active Hypertension patients, % with no visit in 6 months            //
+        //=========================================================================
+
+
+
+//        EncounterCohortDefinition HypertensionPatientsSeenInPeriod = Cohorts.createEncounterParameterizedByDate("Hypertension Patients seen",
+//                onOrAfterOnOrBefore, hypertesionEncounter);
+
+
+
+        CompositionCohortDefinition hospitalHypertensionActivePatientsComposition = hospitalActivePatientOfADisease(NCDpatientSeen,hospitalPatients,inHypertensionProgram);
+        CohortIndicator hospitalHypertensionActivePatientsIndicator = Indicators.newCountIndicator("HypertensionActivePatientsIndicator",
+                hospitalHypertensionActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+        dsd.addColumn("HypertensionActivePatients", "# of hospital active heart Failure patients ", new Mapped(hospitalHypertensionActivePatientsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+
+
+        CompositionCohortDefinition hospitalHypertensionActivePatientsNotSeenIn6MonthsComposition = hospitalActivePatientsNotSeenIn6MonthsComposition(HypertensionActivePatientsComposition,hospitalPatients,NCDpatientSeen);
+        CohortIndicator hospitalHypertensionActivePatientsNotSeenIn6MonthsIndicator = Indicators.newCountIndicator("hospitalHypertensionActivePatientsNotSeenIn6MonthsIndicator",
+                hospitalHypertensionActivePatientsNotSeenIn6MonthsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+       /* dsd.addColumn("HypertensionactivePatientsNotSeenIn6Months", "# of active heart Failure patients with no visit in 6 months", new Mapped(HypertensionActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+*/
+
+        CohortIndicator hospitalpercentHypertensionActivePatientsNotSeenIn6MonthsCompositionIndicator=Indicators.newFractionIndicator("hospitalpercentHypertensionActivePatientsNotSeenIn6MonthsCompositionIndicator",hospitalHypertensionActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),hospitalHypertensionActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("hospitalHypertensionactivePatientsNotSeenIn6Months", "% of hospital active Hypertension patients with no visit in 6 months", new Mapped(hospitalpercentHypertensionActivePatientsNotSeenIn6MonthsCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+        // female number
+        CompositionCohortDefinition hospitalfemaleHypertensionActivePatientsComposition = femaleComposition(hospitalHypertensionActivePatientsComposition,femaleCohort);
+
+        CohortIndicator hospitalfemaleHypertensionActivePatientsIndicator = Indicators.newCountIndicator("hospitalfemaleHypertensionActivePatientsIndicator",
+                hospitalfemaleHypertensionActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+        dsd.addColumn("hospitalfemaleHypertensionActivePatients", "# of hospital female active Hypertension patients with no visit in 6 months", new Mapped(hospitalfemaleHypertensionActivePatientsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+        CompositionCohortDefinition hospitalfemaleHypertensionActivePatientsNotSeenIn6MonthsComposition = femaleComposition(hospitalHypertensionActivePatientsNotSeenIn6MonthsComposition,femaleCohort);
+
+        CohortIndicator hospitalfemaleHypertensionActivePatientsNotSeenIn6MonthsIndicator = Indicators.newCountIndicator("hospitalfemaleHypertensionActivePatientsNotSeenIn6MonthsIndicator",
+                hospitalfemaleHypertensionActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+       /* dsd.addColumn("femaleHypertensionactivePatientsNotSeenIn6Months", "# of female active heart Failure patients with no visit in 6 months", new Mapped(femaleHypertensionActivePatientsNotSeenIn6MonthsIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+*/
+
+
+        CohortIndicator hospitalpercentfemaleHypertensionActivePatientsNotSeenIn6MonthsCompositionIndicator=Indicators.newFractionIndicator("hospitalpercentfemaleheartFailureActivePatientsNotSeenIn6MonthsCompositionIndicator",hospitalfemaleHypertensionActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),hospitalfemaleHypertensionActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("hospitalfemaleHypertensionactivePatientsNotSeenIn6Months", "% of hospital female active Hypertension patients with no visit in 6 months", new Mapped(hospitalpercentfemaleHypertensionActivePatientsNotSeenIn6MonthsCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+        // Male number
+        CompositionCohortDefinition hospitalmaleHypertensionActivePatientsComposition = femaleComposition(hospitalHypertensionActivePatientsComposition,maleCohort);
+        CompositionCohortDefinition hospitalmaleHypertensionActivePatientsNotSeenIn6MonthsComposition = femaleComposition(hospitalHypertensionActivePatientsNotSeenIn6MonthsComposition,maleCohort);
+
+        CohortIndicator hospitalpercentmaleHypertensionActivePatientsNotSeenIn6MonthsCompositionIndicator=Indicators.newFractionIndicator("hospitalpercentmaleHypertensionActivePatientsNotSeenIn6MonthsCompositionIndicator",hospitalmaleHypertensionActivePatientsNotSeenIn6MonthsComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"),hospitalmaleHypertensionActivePatientsComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+        dsd.addColumn("hospitalmaleheartFailureactivePatientsNotSeenIn6Months", "% of hospital male active Hypertension patients with no visit in 6 months", new Mapped(hospitalpercentmaleHypertensionActivePatientsNotSeenIn6MonthsCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+
+
+
+
+
+
 
 
         //PDC
@@ -1111,7 +1659,52 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
 
         return exitedfromcarewithreasonsMonthlyIndicator;
     }
-    private CohortIndicator femaleExitReason(InProgramCohortDefinition inProgram, GenderCohortDefinition femaleCohort, Concept patientExitReason){
+    private CohortIndicator patientExitReason(InProgramCohortDefinition inProgram, SqlCohortDefinition hospitalPatients, Concept patientExitReason){
+
+        CodedObsCohortDefinition exitedpatient = Cohorts.createCodedObsCohortDefinition("exitedpatient", onOrAfterOnOrBefore,reasonForExitingCare, patientExitReason, SetComparator.IN, BaseObsCohortDefinition.TimeModifier.LAST);
+
+        CompositionCohortDefinition exitedfromcarewithreasons = new CompositionCohortDefinition();
+        exitedfromcarewithreasons.setName("exitedfromcarewithreasons");
+        exitedfromcarewithreasons.addParameter(new Parameter("startDate", "startDate", Date.class));
+        exitedfromcarewithreasons.addParameter(new Parameter("endDate", "endDate", Date.class));
+        exitedfromcarewithreasons.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        exitedfromcarewithreasons.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+        exitedfromcarewithreasons.getSearches().put("1",new Mapped<CohortDefinition>(inProgram, ParameterizableUtil
+                .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        exitedfromcarewithreasons.getSearches().put("2",new Mapped<CohortDefinition>(exitedpatient,
+                ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        exitedfromcarewithreasons.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+        exitedfromcarewithreasons.setCompositionString("1 AND 2 AND NOT 3");
+        CohortIndicator exitedfromcarewithreasonsMonthlyIndicator = Indicators.newCountIndicator("exitedfromcarewithreasonsMonthlyIndicator",
+                exitedfromcarewithreasons,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},startDate=${startDate},endDate=${endDate}"));
+
+
+        return exitedfromcarewithreasonsMonthlyIndicator;
+    }
+    private CohortIndicator hospitalPatientExitReason(InProgramCohortDefinition inProgram, SqlCohortDefinition hospitalPatients, Concept patientExitReason){
+
+        CodedObsCohortDefinition exitedpatient = Cohorts.createCodedObsCohortDefinition("exitedpatient", onOrAfterOnOrBefore,reasonForExitingCare, patientExitReason, SetComparator.IN, BaseObsCohortDefinition.TimeModifier.LAST);
+
+        CompositionCohortDefinition exitedfromcarewithreasons = new CompositionCohortDefinition();
+        exitedfromcarewithreasons.setName("exitedfromcarewithreasons");
+        exitedfromcarewithreasons.addParameter(new Parameter("startDate", "startDate", Date.class));
+        exitedfromcarewithreasons.addParameter(new Parameter("endDate", "endDate", Date.class));
+        exitedfromcarewithreasons.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        exitedfromcarewithreasons.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+        exitedfromcarewithreasons.getSearches().put("1",new Mapped<CohortDefinition>(inProgram, ParameterizableUtil
+                .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        exitedfromcarewithreasons.getSearches().put("2",new Mapped<CohortDefinition>(exitedpatient,
+                ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        exitedfromcarewithreasons.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+        exitedfromcarewithreasons.setCompositionString("1 AND 2 AND 3");
+        CohortIndicator exitedfromcarewithreasonsMonthlyIndicator = Indicators.newCountIndicator("exitedfromcarewithreasonsMonthlyIndicator",
+                exitedfromcarewithreasons,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},startDate=${startDate},endDate=${endDate}"));
+
+
+        return exitedfromcarewithreasonsMonthlyIndicator;
+    }
+
+    private CohortIndicator femaleExitReason(InProgramCohortDefinition inProgram,  GenderCohortDefinition femaleCohort, Concept patientExitReason){
 
         CodedObsCohortDefinition exitedpatient = Cohorts.createCodedObsCohortDefinition("exitedpatient", onOrAfterOnOrBefore,reasonForExitingCare, patientExitReason, SetComparator.IN, BaseObsCohortDefinition.TimeModifier.LAST);
 
@@ -1134,7 +1727,57 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
         return femaleExitedFromCareWithreasonsMonthlyIndicator;
     }
 
-    private CompositionCohortDefinition activePatientOfADisease(EncounterCohortDefinition diseasepatientsSeenInPeriod,InProgramCohortDefinition inProgram){
+    private CohortIndicator femaleExitReason(InProgramCohortDefinition inProgram,SqlCohortDefinition hospitalPatients,  GenderCohortDefinition femaleCohort, Concept patientExitReason){
+
+        CodedObsCohortDefinition exitedpatient = Cohorts.createCodedObsCohortDefinition("exitedpatient", onOrAfterOnOrBefore,reasonForExitingCare, patientExitReason, SetComparator.IN, BaseObsCohortDefinition.TimeModifier.LAST);
+
+        CompositionCohortDefinition femaleexitedfromcarewithreasons = new CompositionCohortDefinition();
+        femaleexitedfromcarewithreasons.setName("femaleexitedfromcarewithreasons");
+        femaleexitedfromcarewithreasons.addParameter(new Parameter("startDate", "startDate", Date.class));
+        femaleexitedfromcarewithreasons.addParameter(new Parameter("endDate", "endDate", Date.class));
+        femaleexitedfromcarewithreasons.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        femaleexitedfromcarewithreasons.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+        femaleexitedfromcarewithreasons.getSearches().put("1",new Mapped<CohortDefinition>(inProgram, ParameterizableUtil
+                .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        femaleexitedfromcarewithreasons.getSearches().put("2",new Mapped<CohortDefinition>(exitedpatient,
+                ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        femaleexitedfromcarewithreasons.getSearches().put("3", new Mapped<CohortDefinition>(femaleCohort, null));
+        femaleexitedfromcarewithreasons.getSearches().put("4",new Mapped<CohortDefinition>(hospitalPatients, null));
+
+        femaleexitedfromcarewithreasons.setCompositionString("1 AND 2 AND 3 AND NOT 4");
+        CohortIndicator femaleExitedFromCareWithreasonsMonthlyIndicator = Indicators.newCountIndicator("femaleExitedFromCareWithreasonsMonthlyIndicator",
+                femaleexitedfromcarewithreasons,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},startDate=${startDate},endDate=${endDate}"));
+
+
+        return femaleExitedFromCareWithreasonsMonthlyIndicator;
+    }
+
+    private CohortIndicator hospitalFemaleExitReason(InProgramCohortDefinition inProgram,SqlCohortDefinition hospitalPatients,  GenderCohortDefinition femaleCohort, Concept patientExitReason){
+
+        CodedObsCohortDefinition exitedpatient = Cohorts.createCodedObsCohortDefinition("exitedpatient", onOrAfterOnOrBefore,reasonForExitingCare, patientExitReason, SetComparator.IN, BaseObsCohortDefinition.TimeModifier.LAST);
+
+        CompositionCohortDefinition femaleexitedfromcarewithreasons = new CompositionCohortDefinition();
+        femaleexitedfromcarewithreasons.setName("femaleexitedfromcarewithreasons");
+        femaleexitedfromcarewithreasons.addParameter(new Parameter("startDate", "startDate", Date.class));
+        femaleexitedfromcarewithreasons.addParameter(new Parameter("endDate", "endDate", Date.class));
+        femaleexitedfromcarewithreasons.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        femaleexitedfromcarewithreasons.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+        femaleexitedfromcarewithreasons.getSearches().put("1",new Mapped<CohortDefinition>(inProgram, ParameterizableUtil
+                .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        femaleexitedfromcarewithreasons.getSearches().put("2",new Mapped<CohortDefinition>(exitedpatient,
+                ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        femaleexitedfromcarewithreasons.getSearches().put("3", new Mapped<CohortDefinition>(femaleCohort, null));
+        femaleexitedfromcarewithreasons.getSearches().put("4",new Mapped<CohortDefinition>(hospitalPatients, null));
+
+        femaleexitedfromcarewithreasons.setCompositionString("1 AND 2 AND 3 AND 4");
+        CohortIndicator femaleExitedFromCareWithreasonsMonthlyIndicator = Indicators.newCountIndicator("femaleExitedFromCareWithreasonsMonthlyIndicator",
+                femaleexitedfromcarewithreasons,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},startDate=${startDate},endDate=${endDate}"));
+
+
+        return femaleExitedFromCareWithreasonsMonthlyIndicator;
+    }
+
+    private CompositionCohortDefinition activePatientOfADisease(EncounterCohortDefinition diseasepatientsSeenInPeriod,SqlCohortDefinition hospitalPatients,InProgramCohortDefinition inProgram){
         CompositionCohortDefinition ActivePatientsComposition = new CompositionCohortDefinition();
         ActivePatientsComposition.setName("ActivePatientsComposition");
         ActivePatientsComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -1146,13 +1789,34 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
         ActivePatientsComposition.getSearches().put("2",new Mapped<CohortDefinition>(inProgram, ParameterizableUtil
                 .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrBefore}")));
 
-        ActivePatientsComposition.setCompositionString("1 AND 2");
+        ActivePatientsComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+
+        ActivePatientsComposition.setCompositionString("1 AND 2 AND NOT 3");
+
+
+        return  ActivePatientsComposition;
+    }
+    private CompositionCohortDefinition hospitalActivePatientOfADisease(EncounterCohortDefinition diseasepatientsSeenInPeriod,SqlCohortDefinition hospitalPatients,InProgramCohortDefinition inProgram){
+        CompositionCohortDefinition ActivePatientsComposition = new CompositionCohortDefinition();
+        ActivePatientsComposition.setName("ActivePatientsComposition");
+        ActivePatientsComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        ActivePatientsComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+
+        ActivePatientsComposition.getSearches().put("1",new Mapped<CohortDefinition>(diseasepatientsSeenInPeriod, ParameterizableUtil
+                .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+
+        ActivePatientsComposition.getSearches().put("2",new Mapped<CohortDefinition>(inProgram, ParameterizableUtil
+                .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrBefore}")));
+
+        ActivePatientsComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+
+        ActivePatientsComposition.setCompositionString("1 AND 2 AND 3");
 
 
         return  ActivePatientsComposition;
     }
 
-    private CompositionCohortDefinition ActivePatientsNotSeenIn6MonthsComposition(CompositionCohortDefinition ActivePatientsComposition,EncounterCohortDefinition patientsSeenInPeriod){
+    private CompositionCohortDefinition ActivePatientsNotSeenIn6MonthsComposition(CompositionCohortDefinition ActivePatientsComposition,SqlCohortDefinition hospitalPatients,EncounterCohortDefinition patientsSeenInPeriod){
         CompositionCohortDefinition ActivePatientsNotSeenIn6MonthsComposition = new CompositionCohortDefinition();
         ActivePatientsNotSeenIn6MonthsComposition.setName("ActivePatientsNotSeenIn6MonthsComposition");
         ActivePatientsNotSeenIn6MonthsComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -1163,8 +1827,26 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
 
         ActivePatientsNotSeenIn6MonthsComposition.getSearches().put("2",new Mapped<CohortDefinition>(patientsSeenInPeriod, ParameterizableUtil
                 .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrBefore-6m+1d}")));
+        ActivePatientsNotSeenIn6MonthsComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
 
-        ActivePatientsNotSeenIn6MonthsComposition.setCompositionString("1 AND (NOT 2)");
+        ActivePatientsNotSeenIn6MonthsComposition.setCompositionString("1 AND (NOT 2) AND (NOT 3)");
+
+        return ActivePatientsNotSeenIn6MonthsComposition;
+    }
+    private CompositionCohortDefinition hospitalActivePatientsNotSeenIn6MonthsComposition(CompositionCohortDefinition ActivePatientsComposition,SqlCohortDefinition hospitalPatients,EncounterCohortDefinition patientsSeenInPeriod){
+        CompositionCohortDefinition ActivePatientsNotSeenIn6MonthsComposition = new CompositionCohortDefinition();
+        ActivePatientsNotSeenIn6MonthsComposition.setName("ActivePatientsNotSeenIn6MonthsComposition");
+        ActivePatientsNotSeenIn6MonthsComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        ActivePatientsNotSeenIn6MonthsComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+
+        ActivePatientsNotSeenIn6MonthsComposition.getSearches().put("1",new Mapped<CohortDefinition>(ActivePatientsComposition, ParameterizableUtil
+                .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+
+        ActivePatientsNotSeenIn6MonthsComposition.getSearches().put("2",new Mapped<CohortDefinition>(patientsSeenInPeriod, ParameterizableUtil
+                .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrBefore-6m+1d}")));
+        ActivePatientsNotSeenIn6MonthsComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+
+        ActivePatientsNotSeenIn6MonthsComposition.setCompositionString("1 AND (NOT 2) AND 3");
 
         return ActivePatientsNotSeenIn6MonthsComposition;
     }
@@ -1237,7 +1919,7 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
         oncologyEncounters.add(outpatientOncEncounterType);
         oncologyEncounters.add(inpatientOncologyEncounter);
         hypertesionEncounter =  gp.getEncounterType(GlobalPropertiesManagement.HYPERTENSION_ENCOUNTER);
-        heartFailureEncounter =  gp.getEncounterType(GlobalPropertiesManagement.HEART_FAILURE_ENCOUNTERS);
+        heartFailureEncounter =  gp.getEncounterType(GlobalPropertiesManagement.HEART_FAILURE_ENCOUNTER);
         asthmaEncounter =  gp.getEncounterType(GlobalPropertiesManagement.ASTHMA_VISIT);
         diabetesEncounter =  gp.getEncounterType(GlobalPropertiesManagement.DIABETES_VISIT);
         CKDEncounter =  gp.getEncounterType(GlobalPropertiesManagement.CKD_ENCOUNTER_TYPE);

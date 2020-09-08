@@ -55,6 +55,17 @@ public class Cohorts {
 		location.addParameter(new Parameter("location", "location", Location.class));
 		return location;
 	}
+
+
+	public static SqlCohortDefinition createHospitalPatientCohort(String name) {
+		String hospitalIds=Context.getAdministrationService().getGlobalProperty("reports.hospitalIds");
+		SqlCohortDefinition location = new SqlCohortDefinition();
+		location.setQuery("select p.patient_id from patient p, person_attribute pa, person_attribute_type pat where p.patient_id = pa.person_id and pat.format ='org.openmrs.Location' and pa.voided = 0 and pat.person_attribute_type_id = pa.person_attribute_type_id and pa.value in ("+hospitalIds+")");
+		location.setName(name);
+		//location.addParameter(new Parameter("location", "location", Location.class));
+		return location;
+	}
+
 	
 	public static SqlCohortDefinition createPatientsNotVoided() {
 		SqlCohortDefinition patientsNotVoided = new SqlCohortDefinition(

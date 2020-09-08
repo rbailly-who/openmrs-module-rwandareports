@@ -3,7 +3,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>rwandareports</artifactId>
-	<version>2.7.4-SNAPSHOT</version>
+	<version>2.7.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Rwanda Reports</name>
 	<description>Rwanda Reports Module</description>

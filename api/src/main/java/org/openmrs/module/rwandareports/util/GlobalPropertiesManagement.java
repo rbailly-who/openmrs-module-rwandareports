@@ -6,15 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
-import org.openmrs.EncounterType;
-import org.openmrs.Form;
-import org.openmrs.OrderType;
-import org.openmrs.PatientIdentifierType;
-import org.openmrs.Program;
-import org.openmrs.ProgramWorkflow;
-import org.openmrs.ProgramWorkflowState;
-import org.openmrs.RelationshipType;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 
 public class GlobalPropertiesManagement {
@@ -92,7 +84,13 @@ public class GlobalPropertiesManagement {
 		String globalProperty = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
 		return MetadataLookup.getOrderType(globalProperty);
 	}
-	
+
+
+	public PersonAttributeType getPersonAttributeType(String globalPropertyName) {
+		String globalProperty = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
+		return MetadataLookup.getPersonAttributeType(globalProperty);
+	}
+
 	public ProgramWorkflow getProgramWorkflow(String globalPropertyName, String programName) {
 		String programGp = Context.getAdministrationService().getGlobalProperty(programName);
 		String workflowGp = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
@@ -813,6 +811,7 @@ public class GlobalPropertiesManagement {
 	public static final String LOST_TO_FOLLOWUP_OUTCOME = "reports.LostToFolloUp";
 	public static final String CAUSEOFDEATH = "reports.causeOfDeath";
 	public static final String LOCATIONOFDEATH = "reports.LOCATIONOFDEATH";
+	public static final String FACILITY_PERSON_ATTRIBUTE_TYPE_ID = "reports.healthFacilityAttributeTypeId";
 
 
 
@@ -865,8 +864,11 @@ public class GlobalPropertiesManagement {
 	
 	public final static String HYPERTENSION_ENCOUNTER = "reports.HypertensionEncounterType";
 	
-	public final static String HEART_FAILURE_ENCOUNTERS = "reports.HeartFailureEncounterType";
-	
+	public final static String HEART_FAILURE_ENCOUNTERS = "reports.HeartFailureEncounterTypes";
+
+	public final static String HEART_FAILURE_ENCOUNTER = "reports.HeartFailureEncounterType";
+
+
 	public final static String PATIENT_TRANSFER_ENCOUNTER = "reports.PatientTransferEncounterType";
 	
 	public final static String PEDIANDADULTHIV_ENCOUNTER_TYPES = "reports.hivencounterTypeIds";
