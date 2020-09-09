@@ -6,7 +6,7 @@ name: Deploy Snapshots
 
 on:
   push:
-    branches: ['master']
+    branches: ['master', '1.x']
 
   schedule:
     - cron: '0 */1 * * *'  # Run hourly on the hour
