@@ -118,7 +118,7 @@ private void createDataSetDefinitionByDrugAndDates(ReportDefinition reportDefini
 				"inner join drug_order dro on o.order_id=dro.order_id " +
 				"left join drug d on dro.drug_inventory_id=d.drug_id " +
 				"left join patient P on o.patient_id=P.patient_id" +
-				" where o.start_date>=:startDate and o.start_date<=:endDate and d.drug_id= :Drug" +
+				" where o.start_date>=:startDate and o.start_date<=:endDate and d.drug_id=:Drug " +
 				"and P.voided=0 and o.voided=0");
 		sqldsd.addParameter(new Parameter("startDate", "From:", Date.class));
 		sqldsd.addParameter(new Parameter("endDate", "To:", Date.class));		
