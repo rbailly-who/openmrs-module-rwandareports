@@ -505,7 +505,7 @@ public class SetupHMISIndicatorMonthlyReport {
 
 		SqlEncounterQuery outpatientVisitsNewCaseMaleUnder5Years=new SqlEncounterQuery();
 		outpatientVisitsNewCaseMaleUnder5Years.setName("outpatientVisitsNewCaseMaleUnder5Years");
-		outpatientVisitsNewCaseMaleUnder5Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='M' and DATEDIFF(:endDate , p.birthdate) < 1825 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase+" group by e.encounter_datetime");
+		outpatientVisitsNewCaseMaleUnder5Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='M' and DATEDIFF(:endDate , p.birthdate) < 1825 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase.getConceptId()+" group by e.encounter_datetime");
 		// adultHivVisits.setQuery("select e.encounter_id from encounter e, person p where e.encounter_type in ("+pediHIVEncounterType.getEncounterTypeId()+","+adultHIVEncounterType.getEncounterTypeId()+") and e.encounter_datetime >= :startDate and e.encounter_datetime <= :endDate and p.person_id = e.patient_id and DATEDIFF(:endDate , p.birthdate) >=5475 and e.voided=0 and p.voided=0");
 		outpatientVisitsNewCaseMaleUnder5Years.addParameter(new Parameter("startDate", "startDate", Date.class));
 		outpatientVisitsNewCaseMaleUnder5Years.addParameter(new Parameter("endDate", "endDate", Date.class));
@@ -522,7 +522,7 @@ public class SetupHMISIndicatorMonthlyReport {
 
 		SqlEncounterQuery outpatientVisitsNewCaseFemaleUnder5Years=new SqlEncounterQuery();
 		outpatientVisitsNewCaseFemaleUnder5Years.setName("outpatientVisitsNewCaseFemaleUnder5Years");
-		outpatientVisitsNewCaseFemaleUnder5Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='F' and DATEDIFF(:endDate , p.birthdate) < 1825 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase+" group by e.encounter_datetime");
+		outpatientVisitsNewCaseFemaleUnder5Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='F' and DATEDIFF(:endDate , p.birthdate) < 1825 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase.getConceptId()+" group by e.encounter_datetime");
 		outpatientVisitsNewCaseFemaleUnder5Years.addParameter(new Parameter("startDate", "startDate", Date.class));
 		outpatientVisitsNewCaseFemaleUnder5Years.addParameter(new Parameter("endDate", "endDate", Date.class));
 
@@ -538,7 +538,7 @@ public class SetupHMISIndicatorMonthlyReport {
 
 		SqlEncounterQuery outpatientVisitsNewCaseMaleBetween5And19Years=new SqlEncounterQuery();
 		outpatientVisitsNewCaseMaleBetween5And19Years.setName("outpatientVisitsNewCaseMaleBetween5And19Years");
-		outpatientVisitsNewCaseMaleBetween5And19Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='M' and DATEDIFF(:endDate , p.birthdate) >= 1825 and DATEDIFF(:endDate , p.birthdate) < 7300 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase+" group by e.encounter_datetime");
+		outpatientVisitsNewCaseMaleBetween5And19Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='M' and DATEDIFF(:endDate , p.birthdate) >= 1825 and DATEDIFF(:endDate , p.birthdate) < 7300 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase.getConceptId()+" group by e.encounter_datetime");
 		// adultHivVisits.setQuery("select e.encounter_id from encounter e, person p where e.encounter_type in ("+pediHIVEncounterType.getEncounterTypeId()+","+adultHIVEncounterType.getEncounterTypeId()+") and e.encounter_datetime >= :startDate and e.encounter_datetime <= :endDate and p.person_id = e.patient_id and DATEDIFF(:endDate , p.birthdate) >=5475 and e.voided=0 and p.voided=0");
 		outpatientVisitsNewCaseMaleBetween5And19Years.addParameter(new Parameter("startDate", "startDate", Date.class));
 		outpatientVisitsNewCaseMaleBetween5And19Years.addParameter(new Parameter("endDate", "endDate", Date.class));
@@ -555,7 +555,7 @@ public class SetupHMISIndicatorMonthlyReport {
 
 		SqlEncounterQuery outpatientVisitsNewCaseFemaleBetween5And19Years=new SqlEncounterQuery();
 		outpatientVisitsNewCaseFemaleBetween5And19Years.setName("outpatientVisitsNewCaseFemaleBetween5And19Years");
-		outpatientVisitsNewCaseFemaleBetween5And19Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='F' and DATEDIFF(:endDate , p.birthdate) >= 1825 and DATEDIFF(:endDate , p.birthdate) < 7300 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase+" group by e.encounter_datetime");
+		outpatientVisitsNewCaseFemaleBetween5And19Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='F' and DATEDIFF(:endDate , p.birthdate) >= 1825 and DATEDIFF(:endDate , p.birthdate) < 7300 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase.getConceptId()+" group by e.encounter_datetime");
 		outpatientVisitsNewCaseFemaleBetween5And19Years.addParameter(new Parameter("startDate", "startDate", Date.class));
 		outpatientVisitsNewCaseFemaleBetween5And19Years.addParameter(new Parameter("endDate", "endDate", Date.class));
 
@@ -573,7 +573,7 @@ public class SetupHMISIndicatorMonthlyReport {
 
 		SqlEncounterQuery outpatientVisitsNewCaseMaleEqualAndAbove20Years=new SqlEncounterQuery();
 		outpatientVisitsNewCaseMaleEqualAndAbove20Years.setName("outpatientVisitsNewCaseMaleEqualAndAbove20Years");
-		outpatientVisitsNewCaseMaleEqualAndAbove20Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='M' and DATEDIFF(:endDate , p.birthdate) >= 7300 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase+" group by e.encounter_datetime");
+		outpatientVisitsNewCaseMaleEqualAndAbove20Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='M' and DATEDIFF(:endDate , p.birthdate) >= 7300 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase.getConceptId()+" group by e.encounter_datetime");
 		outpatientVisitsNewCaseMaleEqualAndAbove20Years.addParameter(new Parameter("startDate", "startDate", Date.class));
 		outpatientVisitsNewCaseMaleEqualAndAbove20Years.addParameter(new Parameter("endDate", "endDate", Date.class));
 
@@ -589,7 +589,7 @@ public class SetupHMISIndicatorMonthlyReport {
 
 		SqlEncounterQuery outpatientVisitsNewCaseFemaleEqualAndAbove20Years=new SqlEncounterQuery();
 		outpatientVisitsNewCaseFemaleEqualAndAbove20Years.setName("outpatientVisitsNewCaseFemaleEqualAndAbove20Years");
-		outpatientVisitsNewCaseFemaleEqualAndAbove20Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='F' and DATEDIFF(:endDate , p.birthdate) >= 7300 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase+" group by e.encounter_datetime");
+		outpatientVisitsNewCaseFemaleEqualAndAbove20Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='F' and DATEDIFF(:endDate , p.birthdate) >= 7300 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase.getConceptId()+" group by e.encounter_datetime");
 		outpatientVisitsNewCaseFemaleEqualAndAbove20Years.addParameter(new Parameter("startDate", "startDate", Date.class));
 		outpatientVisitsNewCaseFemaleEqualAndAbove20Years.addParameter(new Parameter("endDate", "endDate", Date.class));
 
@@ -612,7 +612,7 @@ public class SetupHMISIndicatorMonthlyReport {
 
 		SqlEncounterQuery outpatientVisitsoldCaseMaleUnder5Years=new SqlEncounterQuery();
 		outpatientVisitsoldCaseMaleUnder5Years.setName("outpatientVisitsoldCaseMaleUnder5Years");
-		outpatientVisitsoldCaseMaleUnder5Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='M' and DATEDIFF(:endDate , p.birthdate) < 1825 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+oldCase+" group by e.encounter_datetime");
+		outpatientVisitsoldCaseMaleUnder5Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='M' and DATEDIFF(:endDate , p.birthdate) < 1825 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+oldCase.getConceptId()+" group by e.encounter_datetime");
 		// adultHivVisits.setQuery("select e.encounter_id from encounter e, person p where e.encounter_type in ("+pediHIVEncounterType.getEncounterTypeId()+","+adultHIVEncounterType.getEncounterTypeId()+") and e.encounter_datetime >= :startDate and e.encounter_datetime <= :endDate and p.person_id = e.patient_id and DATEDIFF(:endDate , p.birthdate) >=5475 and e.voided=0 and p.voided=0");
 		outpatientVisitsoldCaseMaleUnder5Years.addParameter(new Parameter("startDate", "startDate", Date.class));
 		outpatientVisitsoldCaseMaleUnder5Years.addParameter(new Parameter("endDate", "endDate", Date.class));
@@ -629,7 +629,7 @@ public class SetupHMISIndicatorMonthlyReport {
 
 		SqlEncounterQuery outpatientVisitsoldCaseFemaleUnder5Years=new SqlEncounterQuery();
 		outpatientVisitsoldCaseFemaleUnder5Years.setName("outpatientVisitsoldCaseFemaleUnder5Years");
-		outpatientVisitsoldCaseFemaleUnder5Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='F' and DATEDIFF(:endDate , p.birthdate) < 1825 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+oldCase+" group by e.encounter_datetime");
+		outpatientVisitsoldCaseFemaleUnder5Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='F' and DATEDIFF(:endDate , p.birthdate) < 1825 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+oldCase.getConceptId()+" group by e.encounter_datetime");
 		outpatientVisitsoldCaseFemaleUnder5Years.addParameter(new Parameter("startDate", "startDate", Date.class));
 		outpatientVisitsoldCaseFemaleUnder5Years.addParameter(new Parameter("endDate", "endDate", Date.class));
 
@@ -645,7 +645,7 @@ public class SetupHMISIndicatorMonthlyReport {
 
 		SqlEncounterQuery outpatientVisitsoldCaseMaleBetween5And19Years=new SqlEncounterQuery();
 		outpatientVisitsoldCaseMaleBetween5And19Years.setName("outpatientVisitsoldCaseMaleBetween5And19Years");
-		outpatientVisitsoldCaseMaleBetween5And19Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='M' and DATEDIFF(:endDate , p.birthdate) >= 1825 and DATEDIFF(:endDate , p.birthdate) < 7300 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+oldCase+" group by e.encounter_datetime");
+		outpatientVisitsoldCaseMaleBetween5And19Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='M' and DATEDIFF(:endDate , p.birthdate) >= 1825 and DATEDIFF(:endDate , p.birthdate) < 7300 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+oldCase.getConceptId()+" group by e.encounter_datetime");
 		// adultHivVisits.setQuery("select e.encounter_id from encounter e, person p where e.encounter_type in ("+pediHIVEncounterType.getEncounterTypeId()+","+adultHIVEncounterType.getEncounterTypeId()+") and e.encounter_datetime >= :startDate and e.encounter_datetime <= :endDate and p.person_id = e.patient_id and DATEDIFF(:endDate , p.birthdate) >=5475 and e.voided=0 and p.voided=0");
 		outpatientVisitsoldCaseMaleBetween5And19Years.addParameter(new Parameter("startDate", "startDate", Date.class));
 		outpatientVisitsoldCaseMaleBetween5And19Years.addParameter(new Parameter("endDate", "endDate", Date.class));
@@ -662,7 +662,7 @@ public class SetupHMISIndicatorMonthlyReport {
 
 		SqlEncounterQuery outpatientVisitsoldCaseFemaleBetween5And19Years=new SqlEncounterQuery();
 		outpatientVisitsoldCaseFemaleBetween5And19Years.setName("outpatientVisitsoldCaseFemaleBetween5And19Years");
-		outpatientVisitsoldCaseFemaleBetween5And19Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='F' and DATEDIFF(:endDate , p.birthdate) >= 1825 and DATEDIFF(:endDate , p.birthdate) < 7300 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+oldCase+" group by e.encounter_datetime");
+		outpatientVisitsoldCaseFemaleBetween5And19Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='F' and DATEDIFF(:endDate , p.birthdate) >= 1825 and DATEDIFF(:endDate , p.birthdate) < 7300 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+oldCase.getConceptId()+" group by e.encounter_datetime");
 		outpatientVisitsoldCaseFemaleBetween5And19Years.addParameter(new Parameter("startDate", "startDate", Date.class));
 		outpatientVisitsoldCaseFemaleBetween5And19Years.addParameter(new Parameter("endDate", "endDate", Date.class));
 
@@ -680,7 +680,7 @@ public class SetupHMISIndicatorMonthlyReport {
 
 		SqlEncounterQuery outpatientVisitsoldCaseMaleEqualAndAbove20Years=new SqlEncounterQuery();
 		outpatientVisitsoldCaseMaleEqualAndAbove20Years.setName("outpatientVisitsoldCaseMaleEqualAndAbove20Years");
-		outpatientVisitsoldCaseMaleEqualAndAbove20Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='M' and DATEDIFF(:endDate , p.birthdate) >= 7300 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+oldCase+" group by e.encounter_datetime");
+		outpatientVisitsoldCaseMaleEqualAndAbove20Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='M' and DATEDIFF(:endDate , p.birthdate) >= 7300 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+oldCase.getConceptId()+" group by e.encounter_datetime");
 		outpatientVisitsoldCaseMaleEqualAndAbove20Years.addParameter(new Parameter("startDate", "startDate", Date.class));
 		outpatientVisitsoldCaseMaleEqualAndAbove20Years.addParameter(new Parameter("endDate", "endDate", Date.class));
 
@@ -696,7 +696,7 @@ public class SetupHMISIndicatorMonthlyReport {
 
 		SqlEncounterQuery outpatientVisitsoldCaseFemaleEqualAndAbove20Years=new SqlEncounterQuery();
 		outpatientVisitsoldCaseFemaleEqualAndAbove20Years.setName("outpatientVisitsoldCaseFemaleEqualAndAbove20Years");
-		outpatientVisitsoldCaseFemaleEqualAndAbove20Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='F' and DATEDIFF(:endDate , p.birthdate) >= 7300 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+oldCase+" group by e.encounter_datetime");
+		outpatientVisitsoldCaseFemaleEqualAndAbove20Years.setQuery("select e.encounter_id from encounter e, obs o, person p where e.encounter_id=o.encounter_id and o.person_id=p.person_id and p.gender='F' and DATEDIFF(:endDate , p.birthdate) >= 7300 and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+oldCase.getConceptId()+" group by e.encounter_datetime");
 		outpatientVisitsoldCaseFemaleEqualAndAbove20Years.addParameter(new Parameter("startDate", "startDate", Date.class));
 		outpatientVisitsoldCaseFemaleEqualAndAbove20Years.addParameter(new Parameter("endDate", "endDate", Date.class));
 
@@ -718,7 +718,7 @@ private void createCohortMonthlyIndicatorsII(CohortIndicatorDataSetDefinition ds
 
 		//B) Health insurance status of new cases/ Assurance maladies pour nouveaux cas
 
-SqlCohortDefinition newcasePatientsWithInsurance=new SqlCohortDefinition("select o.person_id from obs o, moh_bill_insurance_policy ip where o.person_id=ip.owner and DATEDIFF(ip.expiration_date , o.obs_datetime) >= 0 and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase+" and o.obs_datetime>= :startDate and o.obs_datetime<= :endDate and o.voided=0  and ip.insurance_id!="+ noneInsuranceID +" group by o.person_id");
+SqlCohortDefinition newcasePatientsWithInsurance=new SqlCohortDefinition("select o.person_id from obs o, moh_bill_insurance_policy ip where o.person_id=ip.owner and DATEDIFF(ip.expiration_date , o.obs_datetime) >= 0 and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase.getConceptId()+" and o.obs_datetime>= :startDate and o.obs_datetime<= :endDate and o.voided=0  and ip.insurance_id!="+ noneInsuranceID +" group by o.person_id");
 newcasePatientsWithInsurance.setName("newcasePatientsWithInsurance");
 newcasePatientsWithInsurance.addParameter(new Parameter("startDate", "startDate", Date.class));
 newcasePatientsWithInsurance.addParameter(new Parameter("endDate", "endDate", Date.class));
@@ -736,7 +736,7 @@ dsd.addColumn("II.B.1","Insured  (Mutuelle or other insurance members)/Assurés 
 String insurance_card_no="CONCAT('%', ip.insurance_card_no ,'%')";
 
 		//SqlCohortDefinition nonPayingNewcasesPatient=new SqlCohortDefinition("select o.person_id from obs o, moh_bill_insurance_policy ip where o.person_id=ip.owner and DATEDIFF(ip.expiration_date , o.obs_datetime) >= 0 and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase+" and o.obs_datetime>= :startDate and o.obs_datetime<= :endDate and o.voided=0 and gb.bill_identifier like "+insurance_card_no+" and gb.global_amount=0 and gb.closed=1 and gb.created_date>= :startDate and gb.closing_date<= :endDate and gb.voided=0 group by o.person_id");
-		SqlCohortDefinition nonPayingNewcasesPatient=new SqlCohortDefinition("select o.person_id from obs o, moh_bill_insurance_policy ip,moh_bill_global_bill gb where o.person_id=ip.owner and DATEDIFF(ip.expiration_date , o.obs_datetime) >= 0 and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase+" and o.obs_datetime>=:startDate and o.obs_datetime<=:endDate and o.voided=0 and gb.bill_identifier like "+insurance_card_no+" and gb.global_amount=0 and gb.closed=1 and gb.created_date>=:startDate and gb.closing_date<=:endDate and gb.voided=0 group by o.person_id");
+		SqlCohortDefinition nonPayingNewcasesPatient=new SqlCohortDefinition("select o.person_id from obs o, moh_bill_insurance_policy ip,moh_bill_global_bill gb where o.person_id=ip.owner and DATEDIFF(ip.expiration_date , o.obs_datetime) >= 0 and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase.getConceptId()+" and o.obs_datetime>=:startDate and o.obs_datetime<=:endDate and o.voided=0 and gb.bill_identifier like "+insurance_card_no+" and gb.global_amount=0 and gb.closed=1 and gb.created_date>=:startDate and gb.closing_date<=:endDate and gb.voided=0 group by o.person_id");
 		nonPayingNewcasesPatient.setName("nonPayingNewcasesPatient");
 		nonPayingNewcasesPatient.addParameter(new Parameter("startDate", "startDate", Date.class));
 		nonPayingNewcasesPatient.addParameter(new Parameter("endDate", "endDate", Date.class));
@@ -753,7 +753,7 @@ String insurance_card_no="CONCAT('%', ip.insurance_card_no ,'%')";
 
 
 
-		SqlCohortDefinition indigentPatientsnonPayingNewcasesPatient=new SqlCohortDefinition("select o.person_id from obs o, moh_bill_insurance_policy ip,moh_bill_global_bill gb where o.person_id=ip.owner and DATEDIFF(ip.expiration_date , o.obs_datetime) >= 0 and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase+" and o.obs_datetime>= :startDate and o.obs_datetime<= :endDate and o.voided=0  and ip.insurance_id in ("+indigentsInsuranceIDs+") and gb.bill_identifier like "+insurance_card_no+" and gb.global_amount=0 and gb.closed=1 and gb.created_date>= :startDate and gb.closing_date<= :endDate and gb.voided=0 group by o.person_id");
+		SqlCohortDefinition indigentPatientsnonPayingNewcasesPatient=new SqlCohortDefinition("select o.person_id from obs o, moh_bill_insurance_policy ip,moh_bill_global_bill gb where o.person_id=ip.owner and DATEDIFF(ip.expiration_date , o.obs_datetime) >= 0 and o.concept_id="+caseStatus.getConceptId()+" and o.value_coded="+newCase.getConceptId()+" and o.obs_datetime>= :startDate and o.obs_datetime<= :endDate and o.voided=0  and ip.insurance_id in ("+indigentsInsuranceIDs+") and gb.bill_identifier like "+insurance_card_no+" and gb.global_amount=0 and gb.closed=1 and gb.created_date>= :startDate and gb.closing_date<= :endDate and gb.voided=0 group by o.person_id");
 		indigentPatientsnonPayingNewcasesPatient.setName("indigentPatientsnonPayingNewcasesPatient");
 		indigentPatientsnonPayingNewcasesPatient.addParameter(new Parameter("startDate", "startDate", Date.class));
 		indigentPatientsnonPayingNewcasesPatient.addParameter(new Parameter("endDate", "endDate", Date.class));

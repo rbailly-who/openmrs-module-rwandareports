@@ -648,7 +648,7 @@ public class SetupPDCIndicatorReport {
                    
                    SqlCohortDefinition patientsWithAnySocialSupportNotRecommended=new SqlCohortDefinition();
                    patientsWithAnySocialSupportNotRecommended.setName("patientsWithAnySocialSupportNotRecommended");
-                   patientsWithAnySocialSupportNotRecommended.setQuery("select distinct o.person_id from encounter e, obs o where e.encounter_id=o.encounter_id and e.form_id="+PDCVisitForm.getFormId()+" and o.concept_id="+socialEconomicAssistance.getConceptId()+" and o.value_coded="+socialEconomicAssistanceNotRecommanded+" and o.voided=0 and e.voided=0 and o.obs_datetime>= :startDate and o.obs_datetime<= :endDate");
+                   patientsWithAnySocialSupportNotRecommended.setQuery("select distinct o.person_id from encounter e, obs o where e.encounter_id=o.encounter_id and e.form_id="+PDCVisitForm.getFormId()+" and o.concept_id="+socialEconomicAssistance.getConceptId()+" and o.value_coded="+socialEconomicAssistanceNotRecommanded.getConceptId()+" and o.voided=0 and e.voided=0 and o.obs_datetime>= :startDate and o.obs_datetime<= :endDate");
                    patientsWithAnySocialSupportNotRecommended.addParameter(new Parameter("startDate","startDate",Date.class));
                    patientsWithAnySocialSupportNotRecommended.addParameter(new Parameter("endDate","endDate",Date.class));
                    
