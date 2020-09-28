@@ -76,6 +76,8 @@ public class SetupMentalHealthIndicatorReport {
     private List<Concept> BipolarDisorderList =  new ArrayList<Concept>() ;
     private List<Concept> DepressionList =  new ArrayList<Concept>() ;
     private List<Concept> PsychosisorSchizophreniaList =  new ArrayList<Concept>() ;
+    private List<Concept> PsychosisList = new ArrayList<Concept>();
+    private List<Concept> SchizophreniaList = new ArrayList<Concept>();
 
     private List<Concept> BifferStateList =  new ArrayList<Concept>() ;
 
@@ -280,12 +282,30 @@ public class SetupMentalHealthIndicatorReport {
 //        // B3: Active Patient With  Psychosis/Schizophrenia  //
 //        //=====================================================
 //
-        CohortIndicator activePatientWithPsychosisorSchizophreniaStatesIndicator = activeAndInstateInPeriod(PsychosisorSchizophreniaList,patientWithDDB,patientSeen);
-        dsd.addColumn("activePatientWithPsychosisorSchizophreniaStates", "Total # of active patient with Psychosis or Schizophrenia", new Mapped(activePatientWithPsychosisorSchizophreniaStatesIndicator,
+//        CohortIndicator activePatientWithPsychosisorSchizophreniaStatesIndicator = activeAndInstateInPeriod(PsychosisorSchizophreniaList,patientWithDDB,patientSeen);
+//        dsd.addColumn("activePatientWithPsychosisorSchizophreniaStates", "Total # of active patient with Psychosis or Schizophrenia", new Mapped(activePatientWithPsychosisorSchizophreniaStatesIndicator,
+//                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+//
+//        //=====================================================
+//        // B3: Active Patient With  Psychosis  //
+//        //=====================================================
+//
+        CohortIndicator activePatientWithPsychosisStatesIndicator = activeAndInstateInPeriod(PsychosisList,patientWithDDB,patientSeen);
+        dsd.addColumn("activePatientWithPsychosisStates", "Total # of active patient with Psychosis ", new Mapped(activePatientWithPsychosisStatesIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+//
+//        //=====================================================
+//        // B4: Active Patient With  Schizophrenia  //
+//        //=====================================================
+//
+        CohortIndicator activePatientWithSchizophreniaStatesIndicator = activeAndInstateInPeriod(SchizophreniaList,patientWithDDB,patientSeen);
+        dsd.addColumn("activePatientWithSchizophreniaStates", "Total # of active patient with Schizophrenia", new Mapped(activePatientWithSchizophreniaStatesIndicator,
                 ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
 //
 //        //============================================================================
-//        // B4: Active Patient With  EPILEPSY //
+//        // B5: Active Patient With  EPILEPSY //
 //        //============================================================================
 //
         CohortIndicator activePatientWithEpilepsyStateIndicator = activeAndInstateInPeriod(EPILEPSYList,patientWithDDB,patientSeen);
@@ -293,7 +313,7 @@ public class SetupMentalHealthIndicatorReport {
                 ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
 //
 //        //=============================================
-//        // B5: Active Patient With  Bipolar Disorder //
+//        // B6: Active Patient With  Bipolar Disorder //
 //        //=============================================
 //
         CohortIndicator activePatientWithBipolarDisorderStateIndicator = activeAndInstateInPeriod(BipolarDisorderList,patientWithDDB,patientSeen);
@@ -430,23 +450,25 @@ public class SetupMentalHealthIndicatorReport {
         DepressionList.add(MajorDepressiveDisorderRecurrentSevereWithPsychoticsymptomsF333);
         DepressionList.add(MajorDepressiveDisorderSingleEpisodeF32);
         DepressionList.add(MajorDepressiveDisorderRecurrentF33);
-        PsychosisorSchizophreniaList.add(PSYCHOSISConcept);
-        PsychosisorSchizophreniaList.add(PsychosisDueToOtherMedicalConditionConcept);
-        PsychosisorSchizophreniaList.add(SCHIZOPHRENIAConcept);
-        PsychosisorSchizophreniaList.add(UnspecifiedPsychosisNotDueToaSubstanceOrKnownPsychologicalConditionF29);
-        PsychosisorSchizophreniaList.add(SchizophreniaF20);
+        PsychosisList.add(PSYCHOSISConcept);
+        PsychosisList.add(PsychosisDueToOtherMedicalConditionConcept);
+        PsychosisList.add(UnspecifiedPsychosisNotDueToaSubstanceOrKnownPsychologicalConditionF29);
+        SchizophreniaList.add(SCHIZOPHRENIAConcept);
+        SchizophreniaList.add(SchizophreniaF20);
+
+
         MentalHealthDiagnosisStoppingReasonConcept = gp.getConcept(GlobalPropertiesManagement.Mental_Health_Diagnosis_Stopping_Reason_Concept);
         mentalHealthDiagnosis = gp.getConcept(GlobalPropertiesManagement.MENTAL_HEALTH_DIAGNOSIS_CONCEPT);
 
 
-        SOMATOFORMDISORDERSF45 =  gp.getConcept(GlobalPropertiesManagement.SomatoformdisordersF45);
-        EpilepsyandrecurrentseizuresG40 = gp.getConcept(GlobalPropertiesManagement.EpilepsyandrecurrentseizuresG40);
-        BipolardisorderF31 = gp.getConcept(GlobalPropertiesManagement.BipolardisorderF31);
-        MajorDepressiveDisorderRecurrentSevereWithPsychoticsymptomsF333 = gp.getConcept(GlobalPropertiesManagement.MajorDepressiveDisorderRecurrentSevereWithPsychoticsymptomsF333);
-        MajorDepressiveDisorderSingleEpisodeF32 = gp.getConcept(GlobalPropertiesManagement.MajorDepressiveDisorderSingleEpisodeF32);
-        MajorDepressiveDisorderRecurrentF33 = gp.getConcept(GlobalPropertiesManagement.MajorDepressiveDisorderRecurrentF33);
-        UnspecifiedPsychosisNotDueToaSubstanceOrKnownPsychologicalConditionF29 = gp.getConcept(GlobalPropertiesManagement.UnspecifiedPsychosisNotDueToaSubstanceOrKnownPsychologicalConditionF29);
-        SchizophreniaF20 = gp.getConcept(GlobalPropertiesManagement.SchizophreniaF20);
+//        SOMATOFORMDISORDERSF45 =  gp.getConcept(GlobalPropertiesManagement.SomatoformdisordersF45);
+//        EpilepsyandrecurrentseizuresG40 = gp.getConcept(GlobalPropertiesManagement.EpilepsyandrecurrentseizuresG40);
+//        BipolardisorderF31 = gp.getConcept(GlobalPropertiesManagement.BipolardisorderF31);
+//        MajorDepressiveDisorderRecurrentSevereWithPsychoticsymptomsF333 = gp.getConcept(GlobalPropertiesManagement.MajorDepressiveDisorderRecurrentSevereWithPsychoticsymptomsF333);
+//        MajorDepressiveDisorderSingleEpisodeF32 = gp.getConcept(GlobalPropertiesManagement.MajorDepressiveDisorderSingleEpisodeF32);
+//        MajorDepressiveDisorderRecurrentF33 = gp.getConcept(GlobalPropertiesManagement.MajorDepressiveDisorderRecurrentF33);
+//        UnspecifiedPsychosisNotDueToaSubstanceOrKnownPsychologicalConditionF29 = gp.getConcept(GlobalPropertiesManagement.UnspecifiedPsychosisNotDueToaSubstanceOrKnownPsychologicalConditionF29);
+//        SchizophreniaF20 = gp.getConcept(GlobalPropertiesManagement.SchizophreniaF20);
 
 
     }

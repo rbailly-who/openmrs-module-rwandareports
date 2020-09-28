@@ -150,7 +150,7 @@ public class DataEntryQuantityReportEvaluator implements DataSetEvaluator {
             sql = sql + " and encounter_type in (" + getCommaSeparatedEncounterTypes(encounterTypes) + ")";
         }
         if(program != null){
-            sql = sql + "and patient_id in ("+getCommaSeparatedPatientInProgram(program,endDate) + ")";
+            sql = sql + " and patient_id in ("+getCommaSeparatedPatientInProgram(program,endDate) + ")";
 
         }
         encounterCohort.setQuery(sql);
