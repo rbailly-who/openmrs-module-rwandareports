@@ -144,7 +144,7 @@ private void createDataSetDefinitionByProgramAndDates(ReportDefinition reportDef
 				"left join drug d on dro.drug_inventory_id=d.drug_id " +
 				"left join patient P on o.patient_id=P.patient_id" +
 				" where o.start_date>=:startDate and o.start_date<=:endDate and pp.program_id=:programs " +
-				"and P.voided=0 and o.voided=0");
+				"and P.voided=0 and o.voided=0 and pp.voided=0");
 		sqldsd.addParameter(new Parameter("startDate", "From:", Date.class));
 		sqldsd.addParameter(new Parameter("endDate", "To:", Date.class));		
 		sqldsd.addParameter(prog);		
