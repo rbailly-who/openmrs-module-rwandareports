@@ -132,7 +132,7 @@ public class SetupHypertensionConsultationSheet {
 		MostRecentObservation diastolic = RowPerPatientColumns.getMostRecentDiastolicPB("diastolic", "dd-MMM-yy");
 		dataSetDefinition.addColumn(diastolic, new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getPatientCurrentlyActiveOnDrugOrder("Regimen", new DrugDosageCurrentFilter(hypertensionEncounter)),
+		dataSetDefinition.addColumn(RowPerPatientColumns.getPatientCurrentlyActiveOnDrugOrder("Regimen", null),
 				new HashMap<String, Object>());
 			
 		
