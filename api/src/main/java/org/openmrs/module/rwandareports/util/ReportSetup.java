@@ -57,7 +57,6 @@ import org.openmrs.module.rwandareports.reporting.SetupMentalHealthIndicatorRepo
 import org.openmrs.module.rwandareports.reporting.SetupMentalHealthLateVisit;
 import org.openmrs.module.rwandareports.reporting.SetupMissedChemotherapyPatientList;
 import org.openmrs.module.rwandareports.reporting.SetupMonthlyExecutiveDashboardMetricsReport;
-import org.openmrs.module.rwandareports.reporting.SetupOncologyDailyDrugList;
 import org.openmrs.module.rwandareports.reporting.SetupOncologyExternalBiopsyContactList;
 import org.openmrs.module.rwandareports.reporting.SetupOncologyInpatientClinicMissedVisit;
 import org.openmrs.module.rwandareports.reporting.SetupOncologyOutpatientAppointmentList;
@@ -67,7 +66,6 @@ import org.openmrs.module.rwandareports.reporting.SetupOncologyOutpatientExpecte
 import org.openmrs.module.rwandareports.reporting.SetupOncologyQuarterlyIndicatorReport;
 import org.openmrs.module.rwandareports.reporting.SetupOncologyRegistry;
 import org.openmrs.module.rwandareports.reporting.SetupOncologyTestPatientList;
-import org.openmrs.module.rwandareports.reporting.SetupOncologyTreatmentAdministrationPlan;
 import org.openmrs.module.rwandareports.reporting.SetupPDCIndicatorReport;
 import org.openmrs.module.rwandareports.reporting.SetupPDCMissedVisits;
 import org.openmrs.module.rwandareports.reporting.SetupPDCMonthlyAlert;
@@ -236,12 +234,10 @@ public class ReportSetup {
 	}
 
 	public static List<SetupReport> ONCOLOGY_REPORTS = Arrays.asList(
-		new SetupOncologyTreatmentAdministrationPlan(),
 		new SetupChemotherapyExpectedPatientList(),
 		new SetupOncologyOutpatientExpectedPatientList(),
 		new SetupChemotherapyDailyExpectedPatientList(),
 		new SetupOncologyInpatientClinicMissedVisit(),
-		new SetupOncologyDailyDrugList(),
 		new SetupMissedChemotherapyPatientList(),
 		new SetupOncologyOutpatientClinicPatientList(),
 		new SetupOncologyOutpatientClinicMissedVisit(),

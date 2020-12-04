@@ -1,6 +1,66 @@
 package org.openmrs.module.rwandareports.web.controller;
 
-import org.openmrs.module.rwandareports.reporting.*;
+import org.openmrs.module.rwandareports.reporting.SetupAdultHIVConsultationSheet;
+import org.openmrs.module.rwandareports.reporting.SetupAdultLateVisitAndCD4Report;
+import org.openmrs.module.rwandareports.reporting.SetupAsthmaConsultationSheet;
+import org.openmrs.module.rwandareports.reporting.SetupAsthmaLateVisit;
+import org.openmrs.module.rwandareports.reporting.SetupAsthmaQuarterlyAndMonthReport;
+import org.openmrs.module.rwandareports.reporting.SetupCKDConsultationSheetReport;
+import org.openmrs.module.rwandareports.reporting.SetupCKDMissedvisitReport;
+import org.openmrs.module.rwandareports.reporting.SetupCKDQuarterlyAndMonthlyReport;
+import org.openmrs.module.rwandareports.reporting.SetupChemotherapyDailyExpectedPatientList;
+import org.openmrs.module.rwandareports.reporting.SetupChemotherapyExpectedPatientList;
+import org.openmrs.module.rwandareports.reporting.SetupCombinedHFCSPConsultationReport;
+import org.openmrs.module.rwandareports.reporting.SetupDataEntryDelayReport;
+import org.openmrs.module.rwandareports.reporting.SetupDataEntryQuantityReport;
+import org.openmrs.module.rwandareports.reporting.SetupDataQualityIndicatorReport;
+import org.openmrs.module.rwandareports.reporting.SetupDiabetesConsultAndLTFU;
+import org.openmrs.module.rwandareports.reporting.SetupDiabetesQuarterlyAndMonthReport;
+import org.openmrs.module.rwandareports.reporting.SetupExposedClinicInfantMonthly;
+import org.openmrs.module.rwandareports.reporting.SetupGenericDrugReport;
+import org.openmrs.module.rwandareports.reporting.SetupGenericEncounterReport;
+import org.openmrs.module.rwandareports.reporting.SetupGenericPatientByProgramReport;
+import org.openmrs.module.rwandareports.reporting.SetupHMISIndicatorMonthlyReport;
+import org.openmrs.module.rwandareports.reporting.SetupHMISMOHReport;
+import org.openmrs.module.rwandareports.reporting.SetupHMISRwandaReportBySite;
+import org.openmrs.module.rwandareports.reporting.SetupHeartFailureConsultSheet;
+import org.openmrs.module.rwandareports.reporting.SetupHeartFailureLateVisit;
+import org.openmrs.module.rwandareports.reporting.SetupHeartFailureQuarterlyAndMonthlyReport;
+import org.openmrs.module.rwandareports.reporting.SetupHeartFailurereport;
+import org.openmrs.module.rwandareports.reporting.SetupHypertensionConsultationSheet;
+import org.openmrs.module.rwandareports.reporting.SetupHypertensionLateVisit;
+import org.openmrs.module.rwandareports.reporting.SetupHypertensionQuarterlyAndMonthlyReport;
+import org.openmrs.module.rwandareports.reporting.SetupIDProgramQuarterlyIndicatorReport;
+import org.openmrs.module.rwandareports.reporting.SetupLabResultReports;
+import org.openmrs.module.rwandareports.reporting.SetupMentalHealthConsultationSheet;
+import org.openmrs.module.rwandareports.reporting.SetupMentalHealthIndicatorReport;
+import org.openmrs.module.rwandareports.reporting.SetupMentalHealthLateVisit;
+import org.openmrs.module.rwandareports.reporting.SetupMissedChemotherapyPatientList;
+import org.openmrs.module.rwandareports.reporting.SetupMonthlyExecutiveDashboardMetricsReport;
+import org.openmrs.module.rwandareports.reporting.SetupNCDConsultationSheet;
+import org.openmrs.module.rwandareports.reporting.SetupNCDLateVisitandLTFUReport;
+import org.openmrs.module.rwandareports.reporting.SetupOncologyDataExtractionSheet;
+import org.openmrs.module.rwandareports.reporting.SetupOncologyExternalBiopsyContactList;
+import org.openmrs.module.rwandareports.reporting.SetupOncologyInpatientClinicMissedVisit;
+import org.openmrs.module.rwandareports.reporting.SetupOncologyOutpatientAppointmentList;
+import org.openmrs.module.rwandareports.reporting.SetupOncologyOutpatientClinicMissedVisit;
+import org.openmrs.module.rwandareports.reporting.SetupOncologyOutpatientClinicPatientList;
+import org.openmrs.module.rwandareports.reporting.SetupOncologyOutpatientExpectedPatientList;
+import org.openmrs.module.rwandareports.reporting.SetupOncologyQuarterlyIndicatorReport;
+import org.openmrs.module.rwandareports.reporting.SetupOncologyRegistry;
+import org.openmrs.module.rwandareports.reporting.SetupOncologyTestPatientList;
+import org.openmrs.module.rwandareports.reporting.SetupPBFReport;
+import org.openmrs.module.rwandareports.reporting.SetupPDCIndicatorReport;
+import org.openmrs.module.rwandareports.reporting.SetupPDCMissedVisits;
+import org.openmrs.module.rwandareports.reporting.SetupPDCMonthlyAlert;
+import org.openmrs.module.rwandareports.reporting.SetupPDCMonthlyLTFU;
+import org.openmrs.module.rwandareports.reporting.SetupPDCWeeklyAlert;
+import org.openmrs.module.rwandareports.reporting.SetupPMTCTCombinedClinicMotherMonthlyReport;
+import org.openmrs.module.rwandareports.reporting.SetupPMTCTPregnancyConsultationReport;
+import org.openmrs.module.rwandareports.reporting.SetupPMTCTPregnancyMonthlyReport;
+import org.openmrs.module.rwandareports.reporting.SetupPediHIVConsultationSheet;
+import org.openmrs.module.rwandareports.reporting.SetupPediatricLateVisitAndCD4Report;
+import org.openmrs.module.rwandareports.reporting.SetupTBConsultationSheet;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -416,29 +476,6 @@ public class RwandaSetupReportsFormController {
 	}
 
 	// Oncology Reports
-	@RequestMapping("/module/rwandareports/register_treatmentAdministrationPlan")
-	public ModelAndView registerTreatmentAdministrationPlan() throws Exception {
-		new SetupOncologyTreatmentAdministrationPlan().setup();
-		return new ModelAndView(new RedirectView("rwandareports.form"));
-	}
-
-	@RequestMapping("/module/rwandareports/remove_treatmentAdministrationPlan")
-	public ModelAndView removeTreatmentAdministrationPlan() throws Exception {
-		new SetupOncologyTreatmentAdministrationPlan().delete();
-		return new ModelAndView(new RedirectView("rwandareports.form"));
-	}
-
-	@RequestMapping("/module/rwandareports/register_chemotherapyDailyDrugList")
-	public ModelAndView registerChemotherapyDailyDrugList() throws Exception {
-		new SetupOncologyDailyDrugList().setup();
-		return new ModelAndView(new RedirectView("rwandareports.form"));
-	}
-
-	@RequestMapping("/module/rwandareports/remove_chemotherapyDailyDrugList")
-	public ModelAndView removeChemotherapyDailyDrugList() throws Exception {
-		new SetupOncologyDailyDrugList().delete();
-		return new ModelAndView(new RedirectView("rwandareports.form"));
-	}
 
 	@RequestMapping("/module/rwandareports/register_oncologyBiopsyList")
 	public ModelAndView registerOncologyBiopsyList() throws Exception {
