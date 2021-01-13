@@ -1300,6 +1300,7 @@ public class GlobalPropertiesManagement {
 	public final static String HTN_ENROLL_FORM = "reports.HTNENROLLformId";
 	public final static String ASTHMA_ENROLLMENT_FORM = "reports.asthmaENROLLformId";
 	public final static String GESTATIONALAGEATBIRTHINWEEKS="reports.gestationalAgeAtBirthInWeeks";
-
+	public final static String ONCOLOGY_BREAST_SCREENING_EXAMINATION="reports.oncologyBreastScreeningExamination";
+	public final static String ONCOLOGY_CERVICAL_SCREENING_EXAMINATION="reports.oncologyCervicalScreeningExamination";
 
 }

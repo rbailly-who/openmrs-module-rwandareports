@@ -4430,5 +4430,16 @@
 		<description>IDs for Hospitals location separated by ','.</description>
 	</globalProperty>
 
+<!-- Oncology Screening -->
+	<globalProperty>
+		<property>reports.oncologyBreastScreeningExamination</property>
+		<defaultValue>Oncology Breast Screening Examination</defaultValue>
+		<description>Oncology Breast Screening Examination form</description>
+	</globalProperty>
+	<globalProperty>
+		<property>reports.oncologyCervicalScreeningExamination</property>
+		<defaultValue>Oncology Cervical Screening Examination</defaultValue>
+		<description>Oncology Cervical Screening Examination form</description>
+	</globalProperty>
 
 </module>
