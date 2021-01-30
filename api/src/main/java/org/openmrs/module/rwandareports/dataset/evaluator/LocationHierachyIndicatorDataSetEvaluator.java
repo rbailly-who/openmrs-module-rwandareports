@@ -137,7 +137,7 @@ public class LocationHierachyIndicatorDataSetEvaluator implements DataSetEvaluat
 			
 			SqlCohortDefinition locationCohort = new SqlCohortDefinition();
 			locationCohort
-			        .setQuery("select p.patient_id from patient p, person_attribute pa, person_attribute_type pat where p.patient_id = pa.person_id and pat.name ='Health Center' and pat.person_attribute_type_id = pa.person_attribute_type_id and pa.voided = 0 and pa.value = '"
+			        .setQuery("select p.patient_id from patient p, person_attribute pa, person_attribute_type pat where p.patient_id = pa.person_id and pat.format ='org.openmrs.Location' and pat.person_attribute_type_id = pa.person_attribute_type_id and pa.voided = 0 and pa.value = '"
 			                + loc.getLocationId() + "'");
 			
 			return locationCohort;
@@ -147,7 +147,7 @@ public class LocationHierachyIndicatorDataSetEvaluator implements DataSetEvaluat
 			
 			SqlCohortDefinition locationCohort = new SqlCohortDefinition();
 			locationCohort
-			        .setQuery("select p.patient_id from patient p, person_attribute pa, person_attribute_type pat where p.patient_id = pa.person_id and pat.name ='Health Center' and pat.person_attribute_type_id = pa.person_attribute_type_id and pa.voided = 0 and pa.value in (select location_id from location where retired = 0 and "
+			        .setQuery("select p.patient_id from patient p, person_attribute pa, person_attribute_type pat where p.patient_id = pa.person_id and pat.format ='org.openmrs.Location' and pat.person_attribute_type_id = pa.person_attribute_type_id and pa.voided = 0 and pa.value in (select location_id from location where retired = 0 and "
 			                + hVal + " = '" + location + "')");
 			
 			return locationCohort;
