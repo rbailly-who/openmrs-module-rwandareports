@@ -88,7 +88,6 @@ public class SetupHMISCancerScreeningMonthlyIndicatorReport {
 
     private Concept nextStep;
     private Concept referredTo;
-    private Concept reasonsForReferral;
     private Concept furtherManagement;
     private Concept medicalImaging;
     private Concept BIOPSY;
@@ -677,7 +676,7 @@ SqlCohortDefinition screenedForCervicalCancerWithHPVResult=Cohorts.getPatientsWi
         numberOfPeopleReferredForFurtherEvaluationOfAbnormalClinicalBreastExamComposition.getSearches().put("5",new Mapped<CohortDefinition>(screenedForBreastCancerWithReasonForReferralAsBiopsy, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")));
         numberOfPeopleReferredForFurtherEvaluationOfAbnormalClinicalBreastExamComposition.getSearches().put("6",new Mapped<CohortDefinition>(screenedForBreastCancerWithOtherReason, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")));
 
-        numberOfPeopleReferredForFurtherEvaluationOfAbnormalClinicalBreastExamComposition.setCompositionString("1 and (2 or 3 or 4 or 5 or 6)) ");
+        numberOfPeopleReferredForFurtherEvaluationOfAbnormalClinicalBreastExamComposition.setCompositionString("1 and (2 or 3 or 4 or 5 or 6)");
 
         CohortIndicator numberOfPeopleReferredForFurtherEvaluationOfAbnormalClinicalBreastIndicator = Indicators.newCountIndicator("numberOfPeopleReferredForFurtherEvaluationOfAbnormalClinicalBreastIndicator",
                 numberOfPeopleReferredForFurtherEvaluationOfAbnormalClinicalBreastExamComposition, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}"));
@@ -769,7 +768,7 @@ SqlCohortDefinition screenedForCervicalCancerWithHPVResult=Cohorts.getPatientsWi
         numberOfWomenWithBreastBiopsyPerformedComposition.addParameter(new Parameter("startDate", "startDate", Date.class));
         numberOfWomenWithBreastBiopsyPerformedComposition.addParameter(new Parameter("endDate", "endDate", Date.class));
         numberOfWomenWithBreastBiopsyPerformedComposition.getSearches().put("1",new Mapped<CohortDefinition>(numberOfPatientWithBreastBiopsyPerformed, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")));
-        numberOfWomenWithBreastBiopsyPerformedComposition.getSearches().put("2",new Mapped<CohortDefinition>(female, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")));
+        numberOfWomenWithBreastBiopsyPerformedComposition.getSearches().put("2",new Mapped<CohortDefinition>(female, null));
 
         numberOfWomenWithBreastBiopsyPerformedComposition.setCompositionString("1 and 2");
 
@@ -978,7 +977,6 @@ SqlCohortDefinition screenedForCervicalCancerWithHPVResult=Cohorts.getPatientsWi
         ABNORMAL = Context.getConceptService().getConceptByUuid("3cd75230-26fe-102b-80cb-0017a47871b2");
         nextStep = Context.getConceptService().getConceptByUuid("69b9671b-d8b1-461b-bb7d-adb151775a57");
         referredTo = Context.getConceptService().getConceptByUuid("25782f2c-074f-4834-b7d2-4668cd645a57");
-        reasonsForReferral = Context.getConceptService().getConceptByUuid("1aa373f4-4db5-4b01-bce0-c10a636bb931");
         furtherManagement = Context.getConceptService().getConceptByUuid("de3a4342-b07e-48f8-ab80-202aab697756");
         medicalImaging = Context.getConceptService().getConceptByUuid("7f779262-de04-425b-97f7-9e5cc834eb55");
         BIOPSY = Context.getConceptService().getConceptByUuid("db64df50-1db1-4f80-abe5-b0307d7d4f9e");
